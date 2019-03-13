@@ -8,6 +8,7 @@ import com.zp.course.storage.database.table.AccountEntity;
 import com.zp.course.storage.database.table.UserEntity;
 
 import androidx.room.Database;
+import androidx.room.Insert;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
@@ -27,14 +28,20 @@ public abstract class AppDatabase extends RoomDatabase {
 
     private static final Object sLock = new Object();
 
-    public static AppDatabase getInstance(Context context) {
-        synchronized (sLock) {
-            if (INSTANCE == null) {
-                INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                        AppDatabase.class, DB_NAME)
-                        .build();
+    public static AppDatabase getInstance() {
+        return INSTANCE;
+    }
+
+    public static void initialize(Context context) {
+        if (INSTANCE == null) {
+            synchronized (sLock) {
+                if (INSTANCE == null) {
+                    INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
+                            AppDatabase.class, DB_NAME)
+                            .allowMainThreadQueries()
+                            .build();
+                }
             }
-            return INSTANCE;
         }
     }
 

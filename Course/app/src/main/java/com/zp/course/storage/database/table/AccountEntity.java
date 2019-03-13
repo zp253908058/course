@@ -24,6 +24,11 @@ public class AccountEntity {
     @ColumnInfo
     private String password;
 
+    public AccountEntity(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
     public long getId() {
         return id;
     }

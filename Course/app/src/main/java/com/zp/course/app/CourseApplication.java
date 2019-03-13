@@ -2,6 +2,7 @@ package com.zp.course.app;
 
 import android.app.Application;
 
+import com.zp.course.storage.database.AppDatabase;
 import com.zp.course.util.Toaster;
 
 /**
@@ -19,5 +20,6 @@ public class CourseApplication extends Application {
         super.onCreate();
 
         Toaster.initialize(this);
+        AppDatabase.initialize(this);
     }
 }

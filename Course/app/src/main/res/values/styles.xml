@@ -1,7 +1,50 @@
 <resources>
 
-    <style name="ToolbarStyle" parent="Widget.Design.CollapsingToolbar">
-        <item name="android:navigationIcon">@drawable/ic_arrow_back_black</item>
-        <item name="android:navigationBarColor">@android:color/white</item>
+    <style name="AppBarLayoutStyle" parent="Widget.Design.AppBarLayout">
+        <item name="elevation">4dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="ToolbarStyle" parent="Widget.AppCompat.Toolbar">
+        <item name="android:background">?attr/colorPrimary</item>
+        <item name="navigationIcon">@drawable/ic_arrow_back_black</item>
+        <item name="elevation">4dp</item>
+        <item name="titleTextAppearance">@style/ToolbarTextAppearance.Title</item>
+        <item name="subtitleTextAppearance">@style/ToolbarTextAppearance.Subtitle</item>
+        <item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">?attr/actionBarSize</item>
+        <item name="popupTheme">@style/ToolbarPopupTheme</item>
+    </style>
+
+    <style name="ToolbarPopupTheme" parent="ThemeOverlay.AppCompat.Light">
+        <item name="colorControlActivated">@color/colorPrimary</item>
+        <item name="colorControlHighlight">@color/colorPrimary</item>
+        <item name="colorControlNormal">@android:color/white</item>
+        <item name="android:textColorPrimary">@android:color/black</item>
+    </style>
+
+    <style name="ToolbarTextAppearance">
+        <item name="android:fontFamily">sans-serif-condensed</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:shadowDx">1</item>
+        <item name="android:shadowDy">1</item>
+        <item name="android:shadowRadius">2</item>
+        <item name="android:shadowColor">?colorAccent</item>
+        <item name="android:textColorSecondary">@android:color/white</item>
+    </style>
+
+    <style name="ToolbarTextAppearance.Title">
+        <item name="android:textSize">@dimen/toolbar_text_size</item>
+    </style>
+
+    <style name="ToolbarTextAppearance.Subtitle">
+        <item name="android:textSize">@dimen/toolbar_sub_text_size</item>
+    </style>
+
+    <style name="ButtonStyle" parent="Widget.AppCompat.Button.Borderless.Colored">
+        <item name="android:background">@drawable/background_button_ripple</item>
+        <item name="android:textColor">@android:color/white</item>
     </style>
 </resources>

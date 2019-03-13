@@ -47,6 +47,7 @@ public class LoginActivity extends ToolbarActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        showNavigationIcon(false);
         setContentView(R.layout.activity_login_layout);
 
         initView();
@@ -78,7 +79,7 @@ public class LoginActivity extends ToolbarActivity {
     }
 
     private void onRegister() {
-
+        RegisterActivity.go(this);
     }
 
     /**
@@ -112,19 +113,20 @@ public class LoginActivity extends ToolbarActivity {
             mEntity.setPassword(password);
             loginSuccess();
         } else {
-            Toaster.showToast("用户名或者密码错误");
+            Toaster.showToast(R.string.tip_login_failed);
         }
     }
 
     private boolean verify(String username, String password) {
-        AccountDao dao = AppDatabase.getInstance(this).getAccountDao();
+        AccountDao dao = AppDatabase.getInstance().getAccountDao();
         return dao.verify(username, password) > 0;
     }
 
     private void loginSuccess() {
         boolean isRetain = mCheckBox.isChecked();
         if (!isRetain) {
-            return;
+            mEntity.setUsername("");
+            mEntity.setPassword("");
         }
 
         boolean success = mManager.save(this, mEntity);
