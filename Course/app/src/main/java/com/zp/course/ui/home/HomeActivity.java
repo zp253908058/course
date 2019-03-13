@@ -36,54 +36,5 @@ public class HomeActivity extends ToolbarActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_home_layout);
-
-        ImageView imageView = findViewById(R.id.image_view);
-
-        AnimationDrawable drawable = (AnimationDrawable) imageView.getDrawable();
-        drawable.start();
-//
-//
-        TextView text = findViewById(R.id.alpha_text_view);
-//
-//        AnimationSet set = new AnimationSet(true);
-//        AlphaAnimation alphaAnimation = new AlphaAnimation(1.0f, 0);
-//
-//        ScaleAnimation scaleAnimation = new ScaleAnimation(this, getResources().getAnimation(R.anim.anim_scale_test));
-//
-////        TranslateAnimation translateAnimation = new TranslateAnimation();
-//        set.addAnimation(alphaAnimation);
-//        set.addAnimation(scaleAnimation);
-//
-//
-//        set.setAnimationListener(new Animation.AnimationListener() {
-//            @Override
-//            public void onAnimationStart(Animation animation) {
-//
-//            }
-//
-//            @Override
-//            public void onAnimationEnd(Animation animation) {
-////                text.setVisibility(View.GONE);
-//
-//                Log.e("", "end ..............");
-//            }
-//
-//            @Override
-//            public void onAnimationRepeat(Animation animation) {
-//
-//            }
-//        });
-//        set.setDuration(2000);
-//        set.setInterpolator(new LinearInterpolator());
-//        text.setAnimation(set);
-//        set.start();
-
-        ObjectAnimator objectAnimator = ObjectAnimator.ofObject(text, "text", new TypeEvaluator<Float>() {
-            @Override
-            public Float evaluate(float fraction, Float startValue, Float endValue) {
-                return startValue + (endValue - startValue) * fraction;
-            }
-        }, 0, 100);
-        objectAnimator.start();
     }
 }

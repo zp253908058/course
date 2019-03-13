@@ -1,14 +1,20 @@
 <resources>
-    <string name="app_name">Course</string>
+    <string name="app_name">我的课程</string>
 
     <string name="text_username">用户名</string>
     <string name="text_password">密码</string>
     <string name="text_login">登录</string>
     <string name="text_retain_password">记住密码</string>
+
+
     <string name="hint_register">注册></string>
 
 
     <string name="error_username_empty">用户名为空！</string>
     <string name="error_password_empty">密码为空！</string>
     <string name="error_password_too_short">密码低于6位！</string>
+
+    <string name="label_my_course">我的课程</string>
+    <string name="label_login">登录</string>
+    <string name="label_register">注册</string>
 </resources>

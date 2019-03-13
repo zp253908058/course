@@ -5,19 +5,5 @@
     android:orientation="vertical">
 
 
-    <ImageView
-        android:id="@+id/image_view"
-        android:layout_width="96dp"
-        android:layout_height="96dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/anim_frame_test" />
-
-    <TextView
-        android:id="@+id/alpha_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="渐变消失的View"
-        android:textSize="48sp"/>
-
 
 </LinearLayout>

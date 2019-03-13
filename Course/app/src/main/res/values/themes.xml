@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base application theme. -->
+    <style name="Theme.Base" parent="Theme.AppCompat.Light.NoActionBar">
+        <!--toolbar 主题色-->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <!--toolbar辅助色（或强调色）-->
+        <item name="colorAccent">@color/colorAccent</item>
+        <!--状态栏颜色5.0以下使用这个-->
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <!--去掉标题-->
+        <item name="windowNoTitle">true</item>
+        <!--文字主题色-->
+        <item name="android:textColorPrimary">@color/text_color</item>
+        <!--文字辅助色-->
+        <item name="android:textColorSecondary">@color/text_color_secondary</item>
+        <!--页面背景色-->
+        <item name="android:windowBackground">@android:color/white</item>
+        <!--RecyclerView分割线颜色-->
+        <item name="android:listDivider">@drawable/shape_divider</item>
+        <!--解决textView全局大小写问题-->
+        <item name="android:textAllCaps">false</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowToggleStyle</item>
+        <item name="actionMenuTextColor">@android:color/black</item>
+        <item name="windowActionBar">false</item>
+    </style>
+
+    <style name="OptionsMenuStyle" parent="Widget.AppCompat.PopupMenu">
+        <item name="android:popupBackground">@android:color/white</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="overlapAnchor">false</item>
+    </style>
+
+    <style name="DrawerArrowToggleStyle" parent="@style/Widget.AppCompat.DrawerArrowToggle">
+        <item name="color">@android:color/white</item>
+    </style>
+
+    <style name="AppTheme" parent="Theme.Base" />
+
+
+    <style name="AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <!--item RadioButton or CheckBox color-->
+        <item name="colorControlNormal">@android:color/white</item>
+        <item name="colorControlActivated">@color/colorAccent</item>
+        <!--item text color-->
+        <item name="textColorAlertDialogListItem">@android:color/white</item>
+        <!--buttons color-->
+        <item name="colorAccent">@color/colorAccent</item>
+        <!--title and message color-->
+        <item name="android:textColorPrimary">@android:color/black</item>
+        <!--dialog background-->
+        <item name="android:windowBackground">@drawable/background_alert_dialog</item>
+
+        <!-- 没有标题栏 -->
+        <item name="windowNoTitle">true</item>
+
+        <!--边框-->
+        <item name="android:windowFrame">@null</item>
+
+        <!--是否浮现在activity之上-->
+        <item name="android:windowIsFloating">true</item>
+
+        <!-- 是否透明 -->
+        <item name="android:windowIsTranslucent">false</item>
+
+        <!-- 对话框是否有遮盖 -->
+        <item name="android:windowContentOverlay">@null</item>
+
+        <!-- 对话框出现时背景是否变暗 -->
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
+    <style name="AlertDialogStyle.NoTitle">
+        <item name="android:windowNoTitle">true</item><!--除去title-->
+    </style>
+
+    <style name="Theme.Dialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="windowActionBar">false</item>
+        <!-- 没有标题栏 -->
+        <item name="windowNoTitle">true</item>
+
+        <!--边框-->
+        <item name="android:windowFrame">@null</item>
+
+        <!--是否浮现在activity之上-->
+        <item name="android:windowIsFloating">true</item>
+
+        <!-- 是否透明 -->
+        <item name="android:windowIsTranslucent">true</item>
+
+        <!--除去title-->
+        <item name="android:windowNoTitle">true</item>
+
+        <!-- 对话框是否有遮盖 -->
+        <item name="android:windowContentOverlay">@null</item>
+
+        <!-- 对话框出现时背景是否变暗 -->
+        <item name="android:backgroundDimEnabled">true</item>
+
+        <!-- 背景颜色，因为windowBackground中的背景已经写死了，所以这里的设置无效 -->
+        <item name="android:colorBackground">@color/background_floating_material_light</item>
+
+        <!-- 着色缓存（一般不用）-->
+        <item name="android:colorBackgroundCacheHint">@null</item>
+
+        <!-- 标题的字体样式 -->
+        <item name="android:windowTitleStyle">@style/RtlOverlay.DialogWindowTitle.AppCompat</item>
+        <item name="android:windowTitleBackgroundStyle">
+            @style/Base.DialogWindowTitleBackground.AppCompat
+        </item>
+
+        <!--对话框背景(重要)  , default = abc_dialog_material_background-->
+        <!--<item name="android:windowBackground">@drawable/dialog_bg_custom</item>-->
+
+        <!-- 动画 -->
+        <item name="android:windowAnimationStyle">@style/Animation.AppCompat.Dialog</item>
+
+        <!-- 输入法弹出时自适应 -->
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
+
+        <item name="windowActionModeOverlay">true</item>
+
+        <!-- 列表部分的内边距，作用于单选、多选列表 -->
+        <item name="listPreferredItemPaddingLeft">20dip</item>
+        <item name="listPreferredItemPaddingRight">24dip</item>
+
+        <item name="android:listDivider">@null</item>
+
+        <!-- 单选、多选对话框列表文字的颜色 默认：@color/abc_primary_text_material_light -->
+        <item name="textColorAlertDialogListItem">#00ff00</item>
+
+        <!-- 单选、多选对话框的分割线 -->
+        <!-- dialog中listView的divider 默认：@null-->
+        <item name="listDividerAlertDialog">@drawable/shape_divider</item>
+
+        <!-- 单选对话框的按钮图标 (默认不为null)-->
+        <item name="android:listChoiceIndicatorSingle">@android:drawable/btn_radio</item>
+
+        <!-- 对话框整体的内边距，但不作用于列表部分 默认：@dimen/abc_dialog_padding_material-->
+        <item name="dialogPreferredPadding">20dp</item>
+
+        <item name="alertDialogCenterButtons">true</item>
+
+        <!-- 对话框内各个布局的布局文件-->
+        <item name="alertDialogStyle">@style/AlertDialogStyle</item>
+    </style>
+
+    <!-- 启动界面样式，防止黑屏 -->
+    <style name="SplashStyle" parent="@style/AppTheme">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:background">@mipmap/background_splash</item>
+    </style>
+
+</resources>

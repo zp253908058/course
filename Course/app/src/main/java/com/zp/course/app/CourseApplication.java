@@ -18,6 +18,6 @@ public class CourseApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        Toaster.init(this);
+        Toaster.initialize(this);
     }
 }

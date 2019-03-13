@@ -5,16 +5,24 @@ package com.zp.course.storage.sharedprefence;
  *
  * @author zp
  * @version 1.0
- * @see UsernamePasswordEntity
+ * @see AccountPreference
  * @since 2019/3/11
  */
 
 @Preference(name = "account")
-public class UsernamePasswordEntity {
+public class AccountPreference {
 
     private String username;
 
     private String password;
+
+    public AccountPreference() {
+    }
+
+    public AccountPreference(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
 
     public String getUsername() {
         return username;

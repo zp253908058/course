@@ -1,5 +1,7 @@
 package com.zp.course.ui.sign;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -7,13 +9,17 @@ import androidx.annotation.Nullable;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.zp.course.R;
 import com.zp.course.app.ToolbarActivity;
+import com.zp.course.storage.database.AppDatabase;
+import com.zp.course.storage.database.dao.AccountDao;
+import com.zp.course.storage.sharedprefence.SharedPreferenceManager;
+import com.zp.course.storage.sharedprefence.AccountPreference;
 import com.zp.course.ui.home.HomeActivity;
-import com.zp.course.util.StringUtils;
+import com.zp.course.util.Validator;
 import com.zp.course.util.Toaster;
+import com.zp.course.util.log.Logger;
 
 /**
  * Class description:
@@ -25,10 +31,18 @@ import com.zp.course.util.Toaster;
  */
 public class LoginActivity extends ToolbarActivity {
 
+    public static void go(Context context) {
+        Intent intent = new Intent();
+        intent.setClass(context, LoginActivity.class);
+        context.startActivity(intent);
+    }
+
     private EditText mUsernameText;
     private EditText mPasswordText;
 
     private CheckBox mCheckBox;
+    private SharedPreferenceManager mManager = SharedPreferenceManager.getInstance();
+    private AccountPreference mEntity = new AccountPreference();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,6 +57,12 @@ public class LoginActivity extends ToolbarActivity {
         mPasswordText = findViewById(R.id.login_password);
 
         mCheckBox = findViewById(R.id.login_retain_password);
+
+        boolean success = mManager.load(this, mEntity);
+        if (success) {
+            mUsernameText.setText(mEntity.getUsername());
+            mPasswordText.setText(mEntity.getPassword());
+        }
     }
 
     public void onClick(View view) {
@@ -66,20 +86,20 @@ public class LoginActivity extends ToolbarActivity {
      */
     private void attemptLogin() {
         String username = mUsernameText.getText().toString();
-        if (StringUtils.isEmpty(username)) {
+        if (Validator.isEmpty(username)) {
             mUsernameText.setError(getString(R.string.error_username_empty));
             mUsernameText.requestFocus();
             return;
         }
 
         String password = mPasswordText.getText().toString();
-        if (StringUtils.isEmpty(password)) {
+        if (Validator.isEmpty(password)) {
             mPasswordText.setError(getString(R.string.error_password_empty));
             mPasswordText.requestFocus();
             return;
         }
 
-        if (StringUtils.lenth(password) < 6) {
+        if (password.length() < 6) {
             mPasswordText.setError(getString(R.string.error_password_too_short));
             mPasswordText.requestFocus();
             return;
@@ -88,6 +108,8 @@ public class LoginActivity extends ToolbarActivity {
         boolean success = verify(username, password);
 
         if (success) {
+            mEntity.setUsername(username);
+            mEntity.setPassword(password);
             loginSuccess();
         } else {
             Toaster.showToast("用户名或者密码错误");
@@ -95,7 +117,8 @@ public class LoginActivity extends ToolbarActivity {
     }
 
     private boolean verify(String username, String password) {
-        return true;
+        AccountDao dao = AppDatabase.getInstance(this).getAccountDao();
+        return dao.verify(username, password) > 0;
     }
 
     private void loginSuccess() {
@@ -104,9 +127,12 @@ public class LoginActivity extends ToolbarActivity {
             return;
         }
 
-
+        boolean success = mManager.save(this, mEntity);
+        if (!success) {
+            Logger.e("保存失败");
+        }
         HomeActivity.go(this);
-
+        finish();
     }
 
 }

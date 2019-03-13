@@ -1,17 +1,7 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
-
-
     <style name="ToolbarStyle" parent="Widget.Design.CollapsingToolbar">
         <item name="android:navigationIcon">@drawable/ic_arrow_back_black</item>
         <item name="android:navigationBarColor">@android:color/white</item>
     </style>
-
 </resources>
