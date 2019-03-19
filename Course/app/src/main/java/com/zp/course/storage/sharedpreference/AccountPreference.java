@@ -1,4 +1,4 @@
-package com.zp.course.storage.sharedprefence;
+package com.zp.course.storage.sharedpreference;
 
 /**
  * Class description:

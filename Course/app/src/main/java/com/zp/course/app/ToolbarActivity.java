@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.Window;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.zp.course.R;
 import com.zp.course.util.Validator;
 
@@ -31,6 +32,7 @@ public abstract class ToolbarActivity extends BaseActivity {
 
     private ViewStub mContentView;
     protected Toolbar mToolbar;
+    private FloatingActionButton mFloatingActionButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,12 +57,10 @@ public abstract class ToolbarActivity extends BaseActivity {
             DrawableCompat.setTint(drawable, ResourcesCompat.getColor(getResources(), android.R.color.white, null));
         }
 
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        mToolbar.setNavigationOnClickListener(v -> onBackPressed());
+
+        mFloatingActionButton = findViewById(R.id.toolbar_floating_action_button);
+        mFloatingActionButton.setOnClickListener(v -> onFloatingClick());
     }
 
     public void showNavigationIcon(boolean isShow) {
@@ -73,6 +73,18 @@ public abstract class ToolbarActivity extends BaseActivity {
 
     public void setNavigationIcon(@DrawableRes int resId) {
         mToolbar.setNavigationIcon(resId);
+    }
+
+    public void setFloatingIcon(Drawable drawable) {
+        mFloatingActionButton.setImageDrawable(drawable);
+    }
+
+    public void showFloatingButton(boolean isShow) {
+        mFloatingActionButton.setVisibility(isShow ? View.VISIBLE : View.GONE);
+    }
+
+    public void onFloatingClick() {
+
     }
 
     @Override

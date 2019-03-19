@@ -1,4 +1,4 @@
-package com.zp.course.storage.sharedprefence;
+package com.zp.course.storage.sharedpreference;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -9,7 +9,6 @@ import com.zp.course.util.Validator;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
 

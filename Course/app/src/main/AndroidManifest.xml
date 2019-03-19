@@ -45,5 +45,12 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".ui.course.CourseAddActivity"
+            android:exported="false"
+            android:label="@string/label_course_add"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+
     </application>
 </manifest>

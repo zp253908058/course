@@ -21,8 +21,8 @@ public interface AccountDao {
     void register(AccountEntity entity);
 
     @Query("select id from account where username = :username limit 1")
-    int findByUsername(String username);
+    long findByUsername(String username);
 
     @Query("select id from account where username = :username and password = :password limit 1")
-    int verify(String username, String password);
+    long verify(String username, String password);
 }

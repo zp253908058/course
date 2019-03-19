@@ -3,23 +3,24 @@ package com.zp.course.ui.sign;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
 import com.zp.course.R;
 import com.zp.course.app.ToolbarActivity;
+import com.zp.course.app.UserManager;
 import com.zp.course.storage.database.AppDatabase;
 import com.zp.course.storage.database.dao.AccountDao;
-import com.zp.course.storage.sharedprefence.SharedPreferenceManager;
-import com.zp.course.storage.sharedprefence.AccountPreference;
+import com.zp.course.storage.database.table.UserEntity;
+import com.zp.course.storage.sharedpreference.AccountPreference;
+import com.zp.course.storage.sharedpreference.SharedPreferenceManager;
 import com.zp.course.ui.home.HomeActivity;
-import com.zp.course.util.Validator;
 import com.zp.course.util.Toaster;
+import com.zp.course.util.Validator;
 import com.zp.course.util.log.Logger;
+
+import androidx.annotation.Nullable;
 
 /**
  * Class description:
@@ -48,7 +49,7 @@ public class LoginActivity extends ToolbarActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         showNavigationIcon(false);
-        setContentView(R.layout.activity_login_layout);
+        setContentView(R.layout.activity_login);
 
         initView();
     }
@@ -106,20 +107,23 @@ public class LoginActivity extends ToolbarActivity {
             return;
         }
 
-        boolean success = verify(username, password);
+        long id = verify(username, password);
 
-        if (success) {
+        if (id > 0) {
             mEntity.setUsername(username);
             mEntity.setPassword(password);
+
+            UserEntity entity = AppDatabase.getInstance().getUserDao().getUser(id);
+            UserManager.getInstance().setUser(entity);
             loginSuccess();
         } else {
             Toaster.showToast(R.string.tip_login_failed);
         }
     }
 
-    private boolean verify(String username, String password) {
+    private long verify(String username, String password) {
         AccountDao dao = AppDatabase.getInstance().getAccountDao();
-        return dao.verify(username, password) > 0;
+        return dao.verify(username, password);
     }
 
     private void loginSuccess() {

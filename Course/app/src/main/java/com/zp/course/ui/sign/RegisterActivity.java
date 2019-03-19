@@ -13,6 +13,7 @@ import com.zp.course.app.ToolbarActivity;
 import com.zp.course.storage.database.AppDatabase;
 import com.zp.course.storage.database.dao.AccountDao;
 import com.zp.course.storage.database.table.AccountEntity;
+import com.zp.course.storage.database.table.UserEntity;
 import com.zp.course.util.Toaster;
 import com.zp.course.util.Validator;
 
@@ -100,12 +101,22 @@ public class RegisterActivity extends ToolbarActivity {
     }
 
     private boolean verify(String username) {
-        int id = mAccountDao.findByUsername(username);
+        long id = mAccountDao.findByUsername(username);
         return id == 0;
     }
 
+    /**
+     * 注册账号，并增加一个用户
+     *
+     * @param username 账号
+     * @param password 密码
+     */
     private void register(String username, String password) {
         mAccountDao.register(new AccountEntity(username, password));
+        long id = mAccountDao.findByUsername(username);
+        UserEntity entity = new UserEntity();
+        entity.setAccountId(id);
+        AppDatabase.getInstance().getUserDao().add(entity);
         Toaster.showToast(R.string.tip_register_success);
     }
 }

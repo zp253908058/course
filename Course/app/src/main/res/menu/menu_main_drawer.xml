@@ -1,4 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <item android:title="@string/menu_title_course">
+        <menu>
+            <group android:id="@+id/menu_group_course">
+                <item
+                    android:id="@+id/menu_course"
+                    android:icon="@drawable/ic_course_black"
+                    android:title="@string/menu_item_timetable" />
+            </group>
+        </menu>
+    </item>
+
+    <group android:id="@+id/menu_group_user">
+        <item
+            android:id="@+id/menu_user_guide"
+            android:icon="@drawable/ic_info_outline_black"
+            android:title="@string/menu_item_user_guide" />
+        <item
+            android:id="@+id/menu__setting"
+            android:icon="@drawable/ic_settings_black"
+            android:title="@string/menu_item_setting" />
+        <item
+            android:id="@+id/menu__quit"
+            android:icon="@drawable/ic_power_black"
+            android:title="@string/menu_item_quit" />
+    </group>
+
 </menu>

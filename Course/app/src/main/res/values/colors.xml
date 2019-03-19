@@ -10,6 +10,7 @@
 
     <color name="text_color">#FF212121</color>
     <color name="text_color_secondary">#FF757575</color>
+    <color name="tab_text_color">#FFCCCCCC</color>
 
     <color name="red_50">#FFfde0dc</color>
     <color name="red_100">#FFf9bdbb</color>
