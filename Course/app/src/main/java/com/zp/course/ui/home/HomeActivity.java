@@ -29,6 +29,7 @@ import com.zp.course.app.FragmentViewPagerAdapter;
 import com.zp.course.ui.course.CourseAddActivity;
 import com.zp.course.ui.home.fragment.CourseAllFragment;
 import com.zp.course.ui.home.fragment.CourseLateFragment;
+import com.zp.course.ui.timetable.TimetableActivity;
 import com.zp.course.util.Toaster;
 
 /**
@@ -98,6 +99,12 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.menu_course:
+                TimetableActivity.go(this);
+                break;
+        }
         return false;
     }
 

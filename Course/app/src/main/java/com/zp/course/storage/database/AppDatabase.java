@@ -4,10 +4,13 @@ import android.content.Context;
 
 import com.zp.course.storage.database.dao.AccountDao;
 import com.zp.course.storage.database.dao.CourseDao;
+import com.zp.course.storage.database.dao.TimetableDao;
 import com.zp.course.storage.database.dao.UserDao;
 import com.zp.course.storage.database.table.AccountEntity;
+import com.zp.course.storage.database.table.ClassEntity;
 import com.zp.course.storage.database.table.CourseEntity;
 import com.zp.course.storage.database.table.CourseInfoEntity;
+import com.zp.course.storage.database.table.TimetableEntity;
 import com.zp.course.storage.database.table.UserEntity;
 
 import androidx.annotation.NonNull;
@@ -26,7 +29,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
  * @see AppDatabase
  * @since 2019/3/11
  */
-@Database(entities = {AccountEntity.class, UserEntity.class, CourseEntity.class, CourseInfoEntity.class}, version = 1, exportSchema = false)
+@Database(entities = {AccountEntity.class, UserEntity.class, CourseEntity.class, CourseInfoEntity.class, TimetableEntity.class, ClassEntity.class}, version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     private static AppDatabase INSTANCE;
 
@@ -56,4 +59,6 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract AccountDao getAccountDao();
 
     public abstract CourseDao getCourseDao();
+
+    public abstract TimetableDao getTimetableDao();
 }
