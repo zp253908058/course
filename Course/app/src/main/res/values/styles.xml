@@ -12,10 +12,16 @@
         <item name="elevation">4dp</item>
         <item name="titleTextAppearance">@style/ToolbarTextAppearance.Title</item>
         <item name="subtitleTextAppearance">@style/ToolbarTextAppearance.Subtitle</item>
-        <item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <item name="theme">@style/ToolbarTheme</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">?attr/actionBarSize</item>
         <item name="popupTheme">@style/ToolbarPopupTheme</item>
+
+    </style>
+
+    <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:colorControlNormal">@android:color/white</item>
+        <item name="android:drawableTint">@android:color/white</item>
     </style>
 
     <style name="ToolbarPopupTheme" parent="ThemeOverlay.AppCompat.Light">

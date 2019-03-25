@@ -1,7 +1,10 @@
 package com.zp.course.storage.database.table;
 
+import java.util.List;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 /**
@@ -29,6 +32,8 @@ public class TimetableEntity {
     private long startMills;  //最开始的时间毫秒数
     @ColumnInfo(name = "user_id")
     private long userId;      //用户id
+    @ColumnInfo(name = "update_time")
+    private long updateTime;   //更新时间
 
     public long getId() {
         return id;
@@ -84,5 +89,13 @@ public class TimetableEntity {
 
     public void setUserId(long userId) {
         this.userId = userId;
+    }
+
+    public long getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(long updateTime) {
+        this.updateTime = updateTime;
     }
 }

@@ -63,6 +63,8 @@ public abstract class ToolbarActivity extends BaseActivity {
         mFloatingActionButton.setOnClickListener(v -> onFloatingClick());
     }
 
+
+
     public void showNavigationIcon(boolean isShow) {
         ActionBar bar = getSupportActionBar();
         if (Validator.isNotNull(bar)) {

@@ -30,6 +30,10 @@ public class SplashActivity extends BaseActivity implements Runnable {
         super.onCreate(savedInstanceState);
     }
 
+    @Override
+    public void onBackPressed() {
+
+    }
 
     @Override
     public void run() {

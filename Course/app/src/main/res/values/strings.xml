@@ -15,6 +15,7 @@
     <string name="text_timetable_duration">课时长</string>
     <string name="text_timetable_week_count">周数</string>
     <string name="text_timetable_start_time">开始时间</string>
+    <string name="text_choose_date">选择时间</string>
 
 
     <string name="hint_register">注册></string>
@@ -36,6 +37,10 @@
     <string name="error_password_inconsistent">密码不一致！</string>
     <string name="error_course_name_empty">课程名为空！</string>
     <string name="error_course_number_empty">课程编号为空！</string>
+    <string name="error_timetable_name_empty">课表名为空！</string>
+    <string name="error_timetable_duration_empty">课程时长为空！</string>
+    <string name="error_timetable_week_empty">周数为空！</string>
+    <string name="error_timetable_start_date_empty">课表开始时间为空！</string>
 
     <string name="label_my_course">我的课程</string>
     <string name="label_login">登录</string>
@@ -43,12 +48,14 @@
     <string name="label_course_add">课程添加</string>
     <string name="label_timetable">我的课表</string>
     <string name="label_timetable_add">新增课表</string>
+    <string name="label_timetable_property">课程配置</string>
 
     <string name="menu_title_course">课程</string>
     <string name="menu_item_timetable">我的课表</string>
     <string name="menu_item_user_guide">用户指南</string>
     <string name="menu_item_setting">设置</string>
     <string name="menu_item_quit">退出</string>
-    <string name="text_choose_date">选择时间</string>
+    <string name="menu_item_timetable_add">添加课信息</string>
+
 
 </resources>

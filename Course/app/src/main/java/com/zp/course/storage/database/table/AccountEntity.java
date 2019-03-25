@@ -17,10 +17,8 @@ public class AccountEntity {
 
     @PrimaryKey(autoGenerate = true)
     private long id;
-
     @ColumnInfo
     private String username;
-
     @ColumnInfo
     private String password;
 
