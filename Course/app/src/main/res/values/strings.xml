@@ -16,6 +16,11 @@
     <string name="text_timetable_week_count">周数</string>
     <string name="text_timetable_start_time">开始时间</string>
     <string name="text_choose_date">选择时间</string>
+    <string name="text_prompt">提示</string>
+    <string name="text_ok">确定</string>
+    <string name="text_cancel">取消</string>
+
+    <string name="prompt_load_message">加载中……</string>
 
 
     <string name="hint_register">注册></string>
