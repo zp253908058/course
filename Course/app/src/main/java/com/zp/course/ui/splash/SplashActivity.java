@@ -44,9 +44,7 @@ public class SplashActivity extends BaseActivity implements Runnable {
     @Override
     protected void onPause() {
         super.onPause();
-        if (mHandler != null) {
-            mHandler.removeCallbacks(this);
-        }
+        mHandler.removeCallbacks(this);
     }
 
     @Override

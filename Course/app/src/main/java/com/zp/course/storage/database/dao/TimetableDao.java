@@ -27,4 +27,7 @@ public interface TimetableDao {
 
     @Query("select * from timetable order by update_time desc limit 1")
     TimetableEntity getLastOne();
+
+    @Query("select id from timetable where week_count = :week limit 1")
+    long findByWeek(int week);
 }

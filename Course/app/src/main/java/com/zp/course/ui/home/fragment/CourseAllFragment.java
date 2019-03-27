@@ -9,7 +9,6 @@ import com.zp.course.util.log.Logger;
 
 import java.util.List;
 
-import androidx.fragment.app.ListFragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;

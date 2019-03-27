@@ -3,5 +3,5 @@
     android:id="@+id/list_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:divider="@color/text_color_secondary"
+    android:divider="@color/divider_color"
     android:dividerHeight="@dimen/divider_height" />

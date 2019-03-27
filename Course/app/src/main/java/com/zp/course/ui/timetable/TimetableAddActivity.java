@@ -2,6 +2,7 @@ package com.zp.course.ui.timetable;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -9,19 +10,26 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.zp.course.R;
 import com.zp.course.app.ToolbarActivity;
+import com.zp.course.pop.DialogFactory;
 import com.zp.course.storage.database.AppDatabase;
 import com.zp.course.storage.database.dao.TimetableDao;
 import com.zp.course.storage.database.table.TimetableEntity;
 import com.zp.course.util.Toaster;
 import com.zp.course.util.Validator;
+import com.zp.course.widget.WheelView;
 
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.work.OneTimeWorkRequest;
 
 /**
  * Class description:
@@ -43,11 +51,13 @@ public class TimetableAddActivity extends ToolbarActivity implements DatePickerD
     }
 
     private EditText mNameText;
-    private EditText mDurationText;
-    private EditText mWeekText;
-    private EditText mDateText;
+    private TextView mDurationText;
+    private TextView mWeekText;
+    private TextView mDateText;
 
-    private DatePickerDialog mDialog;
+    private AlertDialog mDurationDialog;
+    private AlertDialog mWeekDialog;
+    private DatePickerDialog mDatePickerDialog;
     private long mStartMills;
 
     private TimetableEntity mEntity = new TimetableEntity();
@@ -69,13 +79,57 @@ public class TimetableAddActivity extends ToolbarActivity implements DatePickerD
         mWeekText = findViewById(R.id.timetable_add_week_count);
         mDateText = findViewById(R.id.timetable_add_date);
 
-        Calendar calendar = Calendar.getInstance();
-        mDialog = new DatePickerDialog(this, R.style.AlertDialogStyle, this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        List<String> duration = Arrays.asList(getResources().getStringArray(R.array.duration_select));
+        mDurationDialog = DialogFactory.createOptionMenuDialog(this, duration, (parent, view, position, id) -> {
+            String item = (String) parent.getAdapter().getItem(position);
+            mDurationText.setText(item);
+            mDurationDialog.dismiss();
+        });
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogStyle_NoTitle);
+        View view = getLayoutInflater().inflate(R.layout.common_wheel_view, null);
+        WheelView wheelView = view.findViewById(R.id.wheel_view);
+        wheelView.setDataList(Arrays.asList(getResources().getStringArray(R.array.week_count_select)));
+        wheelView.setOnWheelChangeListener((item, position) -> mWeekText.setText(item));
+        wheelView.setMaximumWidthText("00");
+        builder.setPositiveButton(getString(R.string.text_ok), (dialog, which) -> dialog.dismiss());
+        builder.setNegativeButton(getString(R.string.text_cancel), (dialog, which) -> {
+            mWeekText.setText("");
+            dialog.dismiss();
+        });
+        builder.setView(view);
+        mWeekDialog = builder.create();
+
+        mDatePickerDialog = DialogFactory.createDatePickerDialog(this, this);
 
     }
 
     public void onClick(View view) {
-        mDialog.show();
+        int id = view.getId();
+        switch (id) {
+            case R.id.timetable_add_duration_layout:
+                showDurationDialog();
+                break;
+            case R.id.timetable_add_week_count_layout:
+                showWeekSelectDialog();
+                break;
+            case R.id.timetable_add_date_layout:
+                showDatePickerDialog();
+                break;
+        }
+
+    }
+
+    private void showDurationDialog() {
+        mDurationDialog.show();
+    }
+
+    private void showWeekSelectDialog() {
+        mWeekDialog.show();
+    }
+
+    private void showDatePickerDialog() {
+        mDatePickerDialog.show();
     }
 
     @Override
@@ -111,21 +165,24 @@ public class TimetableAddActivity extends ToolbarActivity implements DatePickerD
         String duration = mDurationText.getText().toString();
         if (Validator.isEmpty(duration)) {
             mDurationText.setError(getString(R.string.error_timetable_duration_empty));
-            mDurationText.requestFocus();
             return;
         }
 
         String week = mWeekText.getText().toString();
         if (Validator.isEmpty(week)) {
             mWeekText.setError(getString(R.string.error_timetable_week_empty));
-            mWeekText.requestFocus();
             return;
         }
 
         String startDate = mDateText.getText().toString();
         if (Validator.isEmpty(startDate)) {
             mDateText.setError(getString(R.string.error_timetable_start_date_empty));
-            mDateText.requestFocus();
+            return;
+        }
+
+        boolean check = mDao.findByWeek(Integer.parseInt(week)) > 0;
+        if (check) {
+            Toaster.showToast("第" + week + "课表已存在。");
             return;
         }
 

@@ -9,7 +9,6 @@ import android.graphics.Rect;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -19,7 +18,7 @@ import android.widget.Scroller;
 import com.zp.course.R;
 import com.zp.course.util.DensityUtils;
 
-import java.text.Format;
+import java.util.Arrays;
 import java.util.List;
 
 import androidx.annotation.ColorInt;
@@ -35,30 +34,31 @@ import androidx.annotation.Nullable;
  * @see WheelView
  * @since 2019/3/25
  */
-public class WheelView<T> extends View {
+public class WheelView extends View {
 
-    private static final int DEFAULT_TEXT_SIZE = 1 >> 4;
+    private static final int DEFAULT_TEXT_COLOR = Color.BLACK;
+    private static final int DEFAULT_TEXT_SIZE = 1 << 4;
+    private static final int DEFAULT_SELECT_TEXT_SIZE = 18;
+    private static final int DEFAULT_SELECT_COLOR = Color.parseColor("#FF33AAFF");
+    private static final int DEFAULT_CURTAIN_COLOR = Color.parseColor("#303D3D3D");
+    private static final int DEFAULT_CURTAIN_BORDER_COLOR = Color.BLACK;
+    private static final int DEFAULT_ITEM_SPACE = 12;
 
     /**
      * 数据集合
      */
-    private List<T> mDataList;
-
-    /**
-     * 格式化
-     */
-    private Format mDataFormat;
+    private List<String> mDataList;
 
     /**
      * 未选中文本颜色
      */
     @ColorInt
-    private int mTextColor;
+    private int mTextColor = DEFAULT_TEXT_COLOR;
 
     /**
      * 未选中文本大小
      */
-    private int mTextSize;
+    private int mTextSize = DensityUtils.spToPx(getContext(), DEFAULT_TEXT_SIZE);
 
     /**
      * 未选中文本画笔
@@ -68,20 +68,23 @@ public class WheelView<T> extends View {
     /**
      * 字体渐变，开启后越靠近边缘，字体越模糊
      */
-    private boolean mIsTextGradual;
+    private boolean mIsTextGradual = true;
 
     /**
      * 选中的Item的Text颜色
      */
     @ColorInt
-    private int mSelectedItemTextColor;
+    private int mSelectedTextColor = DEFAULT_SELECT_COLOR;
 
     /**
      * 选中的Item的Text大小
      */
-    private int mSelectedItemTextSize;
+    private int mSelectedTextSize = DensityUtils.spToPx(getContext(), DEFAULT_SELECT_TEXT_SIZE);
 
-    private Paint mSelectedItemPaint;
+    /**
+     * 选中Item的文本画笔
+     */
+    private Paint mSelectedPaint;
     /**
      * 指示器文字
      * 会在中心文字后边多绘制一个文字。
@@ -92,13 +95,16 @@ public class WheelView<T> extends View {
      * 指示器文字颜色
      */
     @ColorInt
-    private int mIndicatorTextColor;
+    private int mIndicatorTextColor = DEFAULT_SELECT_COLOR;
 
     /**
      * 指示器文字大小
      */
-    private int mIndicatorTextSize;
+    private int mIndicatorTextSize = DensityUtils.spToPx(getContext(), DEFAULT_TEXT_SIZE);
 
+    /**
+     * 指示器文本画笔
+     */
     private Paint mIndicatorPaint;
 
     private Paint mPaint;
@@ -110,52 +116,54 @@ public class WheelView<T> extends View {
     /**
      * 输入的一段文字，可以用来测量 mTextMaxWidth
      */
-    private String mItemMaximumWidthText;
+    private String mMaximumWidthText;
 
     /**
      * 显示的Item一半的数量（中心Item上下两边分别的数量）
-     * 总显示的数量为 mHalfVisibleItemCount * 2 + 1
+     * 总显示的数量为 mHalfVisibleCount * 2 + 1
      */
-    private int mHalfVisibleItemCount;
+    private int mHalfVisibleCount = 2;
 
     /**
      * 两个Item之间的高度间隔
      */
-    private int mItemHeightSpace, mItemWidthSpace;
+    private int mHeightSpace = DensityUtils.dipToPx(getContext(), DEFAULT_ITEM_SPACE);
 
-    private int mItemHeight;
+    private int mWidthSpace = DensityUtils.dipToPx(getContext(), DEFAULT_ITEM_SPACE);
+
+    private int mHeight;
 
     /**
      * 当前的Item的位置
      */
-    private int mCurrentPosition;
+    private int mCurrentPosition = 0;
 
     /**
      * 是否将中间的Item放大
      */
-    private boolean mIsZoomInSelectedItem;
+    private boolean mIsZoomInSelected = true;
 
     /**
      * 是否显示幕布，中央Item会遮盖一个颜色颜色
      */
-    private boolean mIsShowCurtain;
+    private boolean mIsShowCurtain = true;
 
     /**
      * 幕布颜色
      */
     @ColorInt
-    private int mCurtainColor;
+    private int mCurtainColor = DEFAULT_CURTAIN_COLOR;
 
     /**
      * 是否显示幕布的边框
      */
-    private boolean mIsShowCurtainBorder;
+    private boolean mIsShowCurtainBorder = true;
 
     /**
      * 幕布边框的颜色
      */
     @ColorInt
-    private int mCurtainBorderColor;
+    private int mCurtainBorderColor = DEFAULT_CURTAIN_BORDER_COLOR;
 
     /**
      * 整个控件的可绘制面积
@@ -165,17 +173,17 @@ public class WheelView<T> extends View {
     /**
      * 中心被选中的Item的坐标矩形
      */
-    private Rect mSelectedItemRect;
+    private Rect mSelectedRect;
 
     /**
      * 第一个Item的绘制Text的坐标
      */
-    private int mFirstItemDrawX, mFirstItemDrawY;
+    private int mFirstDrawX, mFirstDrawY;
 
     /**
      * 中心的Item绘制text的Y轴坐标
      */
-    private int mCenterItemDrawnY;
+    private int mCenterDrawnY;
 
     private Scroller mScroller;
 
@@ -202,7 +210,7 @@ public class WheelView<T> extends View {
     /**
      * 是否循环读取
      */
-    private boolean mIsCyclic = true;
+    private boolean mIsCyclic = false;
 
 
     /**
@@ -224,7 +232,7 @@ public class WheelView<T> extends View {
 
     private Handler mHandler = new Handler();
 
-    private OnWheelChangeListener<T> mOnWheelChangeListener;
+    private OnWheelChangeListener mOnWheelChangeListener;
 
     private Runnable mScrollerRunnable = new Runnable() {
         @Override
@@ -239,18 +247,17 @@ public class WheelView<T> extends View {
             if (mScroller.isFinished() || (mScroller.getFinalY() == mScroller.getCurrY()
                     && mScroller.getFinalX() == mScroller.getCurrX())) {
 
-                if (mItemHeight == 0) {
+                if (mHeight == 0) {
                     return;
                 }
-                int position = -mScrollOffsetY / mItemHeight;
+                int position = -mScrollOffsetY / mHeight;
                 position = fixItemPosition(position);
                 if (mCurrentPosition != position) {
                     mCurrentPosition = position;
                     if (mOnWheelChangeListener == null) {
                         return;
                     }
-                    mOnWheelChangeListener.onWheelSelected(mDataList.get(position),
-                            position);
+                    mOnWheelChangeListener.onWheelSelected(mDataList.get(position), position);
                 }
             }
         }
@@ -269,9 +276,9 @@ public class WheelView<T> extends View {
         super(context, attrs, defStyleAttr);
         initAttrs(context, attrs);
         initPaint();
-        mLinearGradient = new LinearGradient(mTextColor, mSelectedItemTextColor);
+        mLinearGradient = new LinearGradient(mTextColor, mSelectedTextColor);
         mDrawnRect = new Rect();
-        mSelectedItemRect = new Rect();
+        mSelectedRect = new Rect();
         mScroller = new Scroller(context);
 
         ViewConfiguration configuration = ViewConfiguration.get(context);
@@ -289,58 +296,64 @@ public class WheelView<T> extends View {
             int attr = a.getIndex(i);
             switch (attr) {
                 case R.styleable.WheelView_android_textColor:
-                    setTextColor(a.getColor(attr, Color.BLACK));
+                    mTextColor = a.getColor(attr, mTextColor);
                     break;
                 case R.styleable.WheelView_android_textSize:
-                    setTextSize(a.getDimensionPixelSize(attr, DensityUtils.spToPx(getContext(), DEFAULT_TEXT_SIZE)));
+                    mTextSize = (a.getDimensionPixelSize(attr, mTextSize));
                     break;
                 case R.styleable.WheelView_textGradual:
-                    setTextGradual(a.getBoolean(attr, true));
+                    mIsTextGradual = (a.getBoolean(attr, mIsTextGradual));
                     break;
-                case R.styleable.WheelView_wheelCyclic:
-                    setTextGradual(a.getBoolean(attr, true));
+                case R.styleable.WheelView_cyclic:
+                    mIsCyclic = (a.getBoolean(attr, mIsCyclic));
                     break;
-                case R.styleable.WheelView_halfVisibleItemCount:
-                    setTextGradual(a.getBoolean(attr, true));
+                case R.styleable.WheelView_halfVisibleCount:
+                    mHalfVisibleCount = (a.getInteger(attr, mHalfVisibleCount));
                     break;
                 case R.styleable.WheelView_maximumWidthText:
-                    setTextGradual(a.getBoolean(attr, true));
+                    mMaximumWidthText = (a.getString(attr));
                     break;
                 case R.styleable.WheelView_selectedTextColor:
-                    setTextGradual(a.getBoolean(attr, true));
+                    mSelectedTextColor = (a.getColor(attr, mSelectedTextColor));
+                    break;
+                case R.styleable.WheelView_selectedTextSize:
+                    mSelectedTextSize = (a.getDimensionPixelSize(attr, mSelectedTextSize));
                     break;
                 case R.styleable.WheelView_currentPosition:
-                    setTextGradual(a.getBoolean(attr, true));
+                    mCurrentPosition = (a.getInteger(attr, mCurrentPosition));
                     break;
                 case R.styleable.WheelView_widthSpace:
-                    setTextGradual(a.getBoolean(attr, true));
+                    mWidthSpace = (a.getDimensionPixelSize(attr, mWidthSpace));
                     break;
                 case R.styleable.WheelView_heightSpace:
-                    setTextGradual(a.getBoolean(attr, true));
+                    mHeightSpace = (a.getDimensionPixelSize(attr, mHeightSpace));
                     break;
-                case R.styleable.WheelView_zoomInSelectedItem:
-                    setTextGradual(a.getBoolean(attr, true));
+                case R.styleable.WheelView_zoomInSelected:
+                    mIsZoomInSelected = (a.getBoolean(attr, mIsZoomInSelected));
                     break;
-                case R.styleable.WheelView_wheelCurtain:
-                    setTextGradual(a.getBoolean(attr, true));
+                case R.styleable.WheelView_showCurtain:
+                    mIsShowCurtain = (a.getBoolean(attr, mIsShowCurtain));
                     break;
-                case R.styleable.WheelView_wheelCurtainColor:
-                    setTextGradual(a.getBoolean(attr, true));
+                case R.styleable.WheelView_curtainColor:
+                    mCurtainColor = (a.getColor(attr, mCurtainColor));
                     break;
-                case R.styleable.WheelView_wheelCurtainBorder:
-                    setTextGradual(a.getBoolean(attr, true));
+                case R.styleable.WheelView_showCurtainBorder:
+                    mIsShowCurtainBorder = (a.getBoolean(attr, mIsShowCurtainBorder));
                     break;
-                case R.styleable.WheelView_wheelCurtainBorderColor:
-                    setTextGradual(a.getBoolean(attr, true));
+                case R.styleable.WheelView_curtainBorderColor:
+                    mCurtainBorderColor = (a.getColor(attr, mCurtainBorderColor));
                     break;
                 case R.styleable.WheelView_indicatorText:
-                    setTextGradual(a.getBoolean(attr, true));
+                    mIndicatorText = (a.getString(attr));
                     break;
                 case R.styleable.WheelView_indicatorTextColor:
-                    setTextGradual(a.getBoolean(attr, true));
+                    mIndicatorTextColor = (a.getColor(attr, mIndicatorTextColor));
                     break;
                 case R.styleable.WheelView_indicatorTextSize:
-                    setTextGradual(a.getBoolean(attr, true));
+                    mIndicatorTextSize = (a.getDimensionPixelSize(attr, mIndicatorTextSize));
+                    break;
+                case R.styleable.WheelView_dataRes:
+                    mDataList = Arrays.asList(getResources().getStringArray(a.getResourceId(attr, 0)));
                     break;
             }
         }
@@ -354,10 +367,10 @@ public class WheelView<T> extends View {
         }
 
         //这里使用最大的,防止文字大小超过布局大小。
-        mPaint.setTextSize(mSelectedItemTextSize > mTextSize ? mSelectedItemTextSize : mTextSize);
+        mPaint.setTextSize(mSelectedTextSize > mTextSize ? mSelectedTextSize : mTextSize);
 
-        if (!TextUtils.isEmpty(mItemMaximumWidthText)) {
-            mTextMaxWidth = (int) mPaint.measureText(mItemMaximumWidthText);
+        if (!TextUtils.isEmpty(mMaximumWidthText)) {
+            mTextMaxWidth = (int) mPaint.measureText(mMaximumWidthText);
         } else {
             mTextMaxWidth = (int) mPaint.measureText(mDataList.get(0).toString());
         }
@@ -374,11 +387,11 @@ public class WheelView<T> extends View {
         mTextPaint.setTextAlign(Paint.Align.CENTER);
         mTextPaint.setColor(mTextColor);
         mTextPaint.setTextSize(mTextSize);
-        mSelectedItemPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG | Paint.LINEAR_TEXT_FLAG);
-        mSelectedItemPaint.setStyle(Paint.Style.FILL);
-        mSelectedItemPaint.setTextAlign(Paint.Align.CENTER);
-        mSelectedItemPaint.setColor(mSelectedItemTextColor);
-        mSelectedItemPaint.setTextSize(mSelectedItemTextSize);
+        mSelectedPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG | Paint.LINEAR_TEXT_FLAG);
+        mSelectedPaint.setStyle(Paint.Style.FILL);
+        mSelectedPaint.setTextAlign(Paint.Align.CENTER);
+        mSelectedPaint.setColor(mSelectedTextColor);
+        mSelectedPaint.setTextSize(mSelectedTextSize);
         mIndicatorPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG | Paint.LINEAR_TEXT_FLAG);
         mIndicatorPaint.setStyle(Paint.Style.FILL);
         mIndicatorPaint.setTextAlign(Paint.Align.LEFT);
@@ -409,8 +422,8 @@ public class WheelView<T> extends View {
         int specHeightSize = MeasureSpec.getSize(heightMeasureSpec);
         int specHeightMode = MeasureSpec.getMode(heightMeasureSpec);
 
-        int width = mTextMaxWidth + mItemWidthSpace;
-        int height = (mTextMaxHeight + mItemHeightSpace) * getVisibleItemCount();
+        int width = mTextMaxWidth + mWidthSpace;
+        int height = (mTextMaxHeight + mHeightSpace) * getVisibleItemCount();
 
         width += getPaddingLeft() + getPaddingRight();
         height += getPaddingTop() + getPaddingBottom();
@@ -423,26 +436,23 @@ public class WheelView<T> extends View {
      * 如果为Cyclic模式则为Integer的极限值，如果正常模式，则为一整个数据集的上下限。
      */
     private void computeFlingLimitY() {
-        mMinFlingY = mIsCyclic ? Integer.MIN_VALUE :
-                -mItemHeight * (mDataList.size() - 1);
+        mMinFlingY = mIsCyclic ? Integer.MIN_VALUE : -mHeight * (mDataList.size() - 1);
         mMaxFlingY = mIsCyclic ? Integer.MAX_VALUE : 0;
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        mDrawnRect.set(getPaddingLeft(), getPaddingTop(),
-                getWidth() - getPaddingRight(), getHeight() - getPaddingBottom());
-        mItemHeight = mDrawnRect.height() / getVisibleItemCount();
-        mFirstItemDrawX = mDrawnRect.centerX();
-        mFirstItemDrawY = (int) ((mItemHeight - (mSelectedItemPaint.ascent() + mSelectedItemPaint.descent())) / 2);
+        mDrawnRect.set(getPaddingLeft(), getPaddingTop(), getWidth() - getPaddingRight(), getHeight() - getPaddingBottom());
+        mHeight = mDrawnRect.height() / getVisibleItemCount();
+        mFirstDrawX = mDrawnRect.centerX();
+        mFirstDrawY = (int) ((mHeight - (mSelectedPaint.ascent() + mSelectedPaint.descent())) / 2);
         //中间的Item边框
-        mSelectedItemRect.set(getPaddingLeft(), mItemHeight * mHalfVisibleItemCount,
-                getWidth() - getPaddingRight(), mItemHeight + mItemHeight * mHalfVisibleItemCount);
+        mSelectedRect.set(getPaddingLeft(), mHeight * mHalfVisibleCount, getWidth() - getPaddingRight(), mHeight + mHeight * mHalfVisibleCount);
         computeFlingLimitY();
-        mCenterItemDrawnY = mFirstItemDrawY + mItemHeight * mHalfVisibleItemCount;
+        mCenterDrawnY = mFirstDrawY + mHeight * mHalfVisibleCount;
 
-        mScrollOffsetY = -mItemHeight * mCurrentPosition;
+        mScrollOffsetY = -mHeight * mCurrentPosition;
     }
 
     /**
@@ -471,19 +481,19 @@ public class WheelView<T> extends View {
         if (mIsShowCurtain) {
             mPaint.setStyle(Paint.Style.FILL);
             mPaint.setColor(mCurtainColor);
-            canvas.drawRect(mSelectedItemRect, mPaint);
+            canvas.drawRect(mSelectedRect, mPaint);
         }
         if (mIsShowCurtainBorder) {
             mPaint.setStyle(Paint.Style.STROKE);
             mPaint.setColor(mCurtainBorderColor);
-            canvas.drawRect(mSelectedItemRect, mPaint);
+            canvas.drawRect(mSelectedRect, mPaint);
             canvas.drawRect(mDrawnRect, mPaint);
         }
-        int drawnSelectedPos = -mScrollOffsetY / mItemHeight;
+        int drawnSelectedPos = -mScrollOffsetY / mHeight;
         mPaint.setStyle(Paint.Style.FILL);
         //首尾各多绘制一个用于缓冲
-        for (int drawDataPos = drawnSelectedPos - mHalfVisibleItemCount - 1;
-             drawDataPos <= drawnSelectedPos + mHalfVisibleItemCount + 1; drawDataPos++) {
+        for (int drawDataPos = drawnSelectedPos - mHalfVisibleCount - 1;
+             drawDataPos <= drawnSelectedPos + mHalfVisibleCount + 1; drawDataPos++) {
             int position = drawDataPos;
             if (mIsCyclic) {
                 position = fixItemPosition(position);
@@ -493,60 +503,59 @@ public class WheelView<T> extends View {
                 }
             }
 
-            T data = mDataList.get(position);
-            int itemDrawY = mFirstItemDrawY + (drawDataPos + mHalfVisibleItemCount) * mItemHeight + mScrollOffsetY;
+            String data = mDataList.get(position);
+            int itemDrawY = mFirstDrawY + (drawDataPos + mHalfVisibleCount) * mHeight + mScrollOffsetY;
             //距离中心的Y轴距离
-            int distanceY = Math.abs(mCenterItemDrawnY - itemDrawY);
+            int distanceY = Math.abs(mCenterDrawnY - itemDrawY);
 
             if (mIsTextGradual) {
                 //文字颜色渐变要在设置透明度上边，否则会被覆盖
                 //计算文字颜色渐变
-                if (distanceY < mItemHeight) {  //距离中心的高度小于一个ItemHeight才会开启渐变
-                    float colorRatio = 1 - (distanceY / (float) mItemHeight);
-                    mSelectedItemPaint.setColor(mLinearGradient.getColor(colorRatio));
+                if (distanceY < mHeight) {  //距离中心的高度小于一个ItemHeight才会开启渐变
+                    float colorRatio = 1 - (distanceY / (float) mHeight);
+                    mSelectedPaint.setColor(mLinearGradient.getColor(colorRatio));
                     mTextPaint.setColor(mLinearGradient.getColor(colorRatio));
                 } else {
-                    mSelectedItemPaint.setColor(mSelectedItemTextColor);
+                    mSelectedPaint.setColor(mSelectedTextColor);
                     mTextPaint.setColor(mTextColor);
                 }
                 //计算透明度渐变
                 float alphaRatio;
-                if (itemDrawY > mCenterItemDrawnY) {
+                if (itemDrawY > mCenterDrawnY) {
                     alphaRatio = (mDrawnRect.height() - itemDrawY) /
-                            (float) (mDrawnRect.height() - (mCenterItemDrawnY));
+                            (float) (mDrawnRect.height() - (mCenterDrawnY));
                 } else {
-                    alphaRatio = itemDrawY / (float) mCenterItemDrawnY;
+                    alphaRatio = itemDrawY / (float) mCenterDrawnY;
                 }
 
                 alphaRatio = alphaRatio < 0 ? 0 : alphaRatio;
-                mSelectedItemPaint.setAlpha((int) (alphaRatio * 255));
+                mSelectedPaint.setAlpha((int) (alphaRatio * 255));
                 mTextPaint.setAlpha((int) (alphaRatio * 255));
             }
 
             //开启此选项,会将越靠近中心的Item字体放大
-            if (mIsZoomInSelectedItem) {
-                if (distanceY < mItemHeight) {
-                    float addedSize = (mItemHeight - distanceY) / (float) mItemHeight * (mSelectedItemTextSize - mTextSize);
-                    mSelectedItemPaint.setTextSize(mTextSize + addedSize);
+            if (mIsZoomInSelected) {
+                if (distanceY < mHeight) {
+                    float addedSize = (mHeight - distanceY) / (float) mHeight * (mSelectedTextSize - mTextSize);
+                    mSelectedPaint.setTextSize(mTextSize + addedSize);
                     mTextPaint.setTextSize(mTextSize + addedSize);
                 } else {
-                    mSelectedItemPaint.setTextSize(mTextSize);
+                    mSelectedPaint.setTextSize(mTextSize);
                     mTextPaint.setTextSize(mTextSize);
                 }
             } else {
-                mSelectedItemPaint.setTextSize(mTextSize);
+                mSelectedPaint.setTextSize(mTextSize);
                 mTextPaint.setTextSize(mTextSize);
             }
-            String drawText = mDataFormat == null ? data.toString() : mDataFormat.format(data);
             //在中间位置的Item作为被选中的。
-            if (distanceY < mItemHeight / 2) {
-                canvas.drawText(drawText, mFirstItemDrawX, itemDrawY, mSelectedItemPaint);
+            if (distanceY < mHeight / 2) {
+                canvas.drawText(data, mFirstDrawX, itemDrawY, mSelectedPaint);
             } else {
-                canvas.drawText(drawText, mFirstItemDrawX, itemDrawY, mTextPaint);
+                canvas.drawText(data, mFirstDrawX, itemDrawY, mTextPaint);
             }
         }
         if (!TextUtils.isEmpty(mIndicatorText)) {
-            canvas.drawText(mIndicatorText, mFirstItemDrawX + mTextMaxWidth / 2, mCenterItemDrawnY, mIndicatorPaint);
+            canvas.drawText(mIndicatorText, mFirstDrawX + mTextMaxWidth >> 1, mCenterDrawnY, mIndicatorPaint);
         }
     }
 
@@ -582,15 +591,15 @@ public class WheelView<T> extends View {
             case MotionEvent.ACTION_UP:
                 if (!mIsAbortScroller && mTouchDownY == mLastDownY) {
                     performClick();
-                    if (event.getY() > mSelectedItemRect.bottom) {
-                        int scrollItem = (int) (event.getY() - mSelectedItemRect.bottom) / mItemHeight + 1;
+                    if (event.getY() > mSelectedRect.bottom) {
+                        int scrollItem = (int) (event.getY() - mSelectedRect.bottom) / mHeight + 1;
                         mScroller.startScroll(0, mScrollOffsetY, 0,
-                                -scrollItem * mItemHeight);
+                                -scrollItem * mHeight);
 
-                    } else if (event.getY() < mSelectedItemRect.top) {
-                        int scrollItem = (int) (mSelectedItemRect.top - event.getY()) / mItemHeight + 1;
+                    } else if (event.getY() < mSelectedRect.top) {
+                        int scrollItem = (int) (mSelectedRect.top - event.getY()) / mHeight + 1;
                         mScroller.startScroll(0, mScrollOffsetY, 0,
-                                scrollItem * mItemHeight);
+                                scrollItem * mHeight);
                     }
                 } else {
                     mTracker.computeCurrentVelocity(1000, mMaximumVelocity);
@@ -599,10 +608,10 @@ public class WheelView<T> extends View {
                         mScroller.fling(0, mScrollOffsetY, 0, velocity,
                                 0, 0, mMinFlingY, mMaxFlingY);
                         mScroller.setFinalY(mScroller.getFinalY() +
-                                computeDistanceToEndPoint(mScroller.getFinalY() % mItemHeight));
+                                computeDistanceToEndPoint(mScroller.getFinalY() % mHeight));
                     } else {
                         mScroller.startScroll(0, mScrollOffsetY, 0,
-                                computeDistanceToEndPoint(mScrollOffsetY % mItemHeight));
+                                computeDistanceToEndPoint(mScrollOffsetY % mHeight));
                     }
                 }
                 if (!mIsCyclic) {
@@ -626,11 +635,11 @@ public class WheelView<T> extends View {
     }
 
     private int computeDistanceToEndPoint(int remainder) {
-        if (Math.abs(remainder) > mItemHeight / 2) {
+        if (Math.abs(remainder) > mHeight / 2) {
             if (mScrollOffsetY < 0) {
-                return -mItemHeight - remainder;
+                return -mHeight - remainder;
             } else {
-                return mItemHeight - remainder;
+                return mHeight - remainder;
             }
         } else {
             return -remainder;
@@ -638,7 +647,7 @@ public class WheelView<T> extends View {
     }
 
 
-    public void setOnWheelChangeListener(OnWheelChangeListener<T> onWheelChangeListener) {
+    public void setOnWheelChangeListener(OnWheelChangeListener onWheelChangeListener) {
         mOnWheelChangeListener = onWheelChangeListener;
     }
 
@@ -646,8 +655,8 @@ public class WheelView<T> extends View {
         return mTextPaint;
     }
 
-    public Paint getSelectedItemPaint() {
-        return mSelectedItemPaint;
+    public Paint getSelectedPaint() {
+        return mSelectedPaint;
     }
 
     public Paint getPaint() {
@@ -658,11 +667,11 @@ public class WheelView<T> extends View {
         return mIndicatorPaint;
     }
 
-    public List<T> getDataList() {
+    public List getDataList() {
         return mDataList;
     }
 
-    public void setDataList(@NonNull List<T> dataList) {
+    public void setDataList(@NonNull List<String> dataList) {
         mDataList = dataList;
         if (dataList.size() == 0) {
             return;
@@ -711,62 +720,62 @@ public class WheelView<T> extends View {
         postInvalidate();
     }
 
-    public int getSelectedItemTextColor() {
-        return mSelectedItemTextColor;
+    public int getSelectedTextColor() {
+        return mSelectedTextColor;
     }
 
     /**
      * 设置被选中时候的文本颜色
      *
-     * @param selectedItemTextColor 文本颜色
+     * @param selectedTextColor 文本颜色
      */
-    public void setSelectedItemTextColor(@ColorInt int selectedItemTextColor) {
-        if (mSelectedItemTextColor == selectedItemTextColor) {
+    public void setSelectedTextColor(@ColorInt int selectedTextColor) {
+        if (mSelectedTextColor == selectedTextColor) {
             return;
         }
-        mSelectedItemPaint.setColor(selectedItemTextColor);
-        mSelectedItemTextColor = selectedItemTextColor;
-        mLinearGradient.setEndColor(selectedItemTextColor);
+        mSelectedPaint.setColor(selectedTextColor);
+        mSelectedTextColor = selectedTextColor;
+        mLinearGradient.setEndColor(selectedTextColor);
         postInvalidate();
     }
 
-    public int getSelectedItemTextSize() {
-        return mSelectedItemTextSize;
+    public int getSelectedTextSize() {
+        return mSelectedTextSize;
     }
 
     /**
      * 设置被选中时候的文本大小
      *
-     * @param selectedItemTextSize 文字大小
+     * @param selectedTextSize 文字大小
      */
-    public void setSelectedItemTextSize(int selectedItemTextSize) {
-        if (mSelectedItemTextSize == selectedItemTextSize) {
+    public void setSelectedTextSize(int selectedTextSize) {
+        if (mSelectedTextSize == selectedTextSize) {
             return;
         }
-        mSelectedItemPaint.setTextSize(selectedItemTextSize);
-        mSelectedItemTextSize = selectedItemTextSize;
+        mSelectedPaint.setTextSize(selectedTextSize);
+        mSelectedTextSize = selectedTextSize;
         computeTextSize();
         postInvalidate();
     }
 
 
-    public String getItemMaximumWidthText() {
-        return mItemMaximumWidthText;
+    public String getMaximumWidthText() {
+        return mMaximumWidthText;
     }
 
     /**
      * 设置输入的一段文字，用来测量 mTextMaxWidth
      *
-     * @param itemMaximumWidthText 文本内容
+     * @param maximumWidthText 文本内容
      */
-    public void setItemMaximumWidthText(String itemMaximumWidthText) {
-        mItemMaximumWidthText = itemMaximumWidthText;
+    public void setMaximumWidthText(String maximumWidthText) {
+        mMaximumWidthText = maximumWidthText;
         requestLayout();
         postInvalidate();
     }
 
-    public int getHalfVisibleItemCount() {
-        return mHalfVisibleItemCount;
+    public int getHalfVisibleCount() {
+        return mHalfVisibleCount;
     }
 
     /**
@@ -775,49 +784,49 @@ public class WheelView<T> extends View {
      * @return 总显示的数量
      */
     public int getVisibleItemCount() {
-        return mHalfVisibleItemCount * 2 + 1;
+        return mHalfVisibleCount * 2 + 1;
     }
 
     /**
      * 设置显示数据量的个数的一半。
-     * 为保证总显示个数为奇数,这里将总数拆分，总数为 mHalfVisibleItemCount * 2 + 1
+     * 为保证总显示个数为奇数,这里将总数拆分，总数为 mHalfVisibleCount * 2 + 1
      *
-     * @param halfVisibleItemCount 总数量的一半
+     * @param halfVisibleCount 总数量的一半
      */
-    public void setHalfVisibleItemCount(int halfVisibleItemCount) {
-        if (mHalfVisibleItemCount == halfVisibleItemCount) {
+    public void setHalfVisibleCount(int halfVisibleCount) {
+        if (mHalfVisibleCount == halfVisibleCount) {
             return;
         }
-        mHalfVisibleItemCount = halfVisibleItemCount;
+        mHalfVisibleCount = halfVisibleCount;
         requestLayout();
     }
 
-    public int getItemWidthSpace() {
-        return mItemWidthSpace;
+    public int getWidthSpace() {
+        return mWidthSpace;
     }
 
-    public void setItemWidthSpace(int itemWidthSpace) {
-        if (mItemWidthSpace == itemWidthSpace) {
+    public void setWidthSpace(int widthSpace) {
+        if (mWidthSpace == widthSpace) {
             return;
         }
-        mItemWidthSpace = itemWidthSpace;
+        mWidthSpace = widthSpace;
         requestLayout();
     }
 
-    public int getItemHeightSpace() {
-        return mItemHeightSpace;
+    public int getHeightSpace() {
+        return mHeightSpace;
     }
 
     /**
      * 设置两个Item之间的间隔
      *
-     * @param itemHeightSpace 间隔值
+     * @param heightSpace 间隔值
      */
-    public void setItemHeightSpace(int itemHeightSpace) {
-        if (mItemHeightSpace == itemHeightSpace) {
+    public void setHeightSpace(int heightSpace) {
+        if (mHeightSpace == heightSpace) {
             return;
         }
-        mItemHeightSpace = itemHeightSpace;
+        mHeightSpace = heightSpace;
         requestLayout();
     }
 
@@ -855,16 +864,16 @@ public class WheelView<T> extends View {
         }
 
         //如果mItemHeight=0代表还没有绘制完成，这时平滑滚动没有意义
-        if (smoothScroll && mItemHeight > 0) {
-            mScroller.startScroll(0, mScrollOffsetY, 0, (mCurrentPosition - currentPosition) * mItemHeight);
+        if (smoothScroll && mHeight > 0) {
+            mScroller.startScroll(0, mScrollOffsetY, 0, (mCurrentPosition - currentPosition) * mHeight);
 //            mScroller.setFinalY(mScroller.getFinalY() +
-//                    computeDistanceToEndPoint(mScroller.getFinalY() % mItemHeight));
-            int finalY = -currentPosition * mItemHeight;
+//                    computeDistanceToEndPoint(mScroller.getFinalY() % mHeight));
+            int finalY = -currentPosition * mHeight;
             mScroller.setFinalY(finalY);
             mHandler.post(mScrollerRunnable);
         } else {
             mCurrentPosition = currentPosition;
-            mScrollOffsetY = -mItemHeight * mCurrentPosition;
+            mScrollOffsetY = -mHeight * mCurrentPosition;
             postInvalidate();
             if (mOnWheelChangeListener != null) {
                 mOnWheelChangeListener.onWheelSelected(mDataList.get(currentPosition), currentPosition);
@@ -872,15 +881,15 @@ public class WheelView<T> extends View {
         }
     }
 
-    public boolean isZoomInSelectedItem() {
-        return mIsZoomInSelectedItem;
+    public boolean isZoomInSelected() {
+        return mIsZoomInSelected;
     }
 
-    public void setZoomInSelectedItem(boolean zoomInSelectedItem) {
-        if (mIsZoomInSelectedItem == zoomInSelectedItem) {
+    public void setZoomInSelected(boolean zoomInSelected) {
+        if (mIsZoomInSelected == zoomInSelected) {
             return;
         }
-        mIsZoomInSelectedItem = zoomInSelectedItem;
+        mIsZoomInSelected = zoomInSelected;
         postInvalidate();
     }
 
@@ -1030,22 +1039,8 @@ public class WheelView<T> extends View {
         postInvalidate();
     }
 
-    /**
-     * 设置数据集格式
-     *
-     * @param dataFormat 格式
-     */
-    public void setDataFormat(Format dataFormat) {
-        mDataFormat = dataFormat;
-        postInvalidate();
-    }
-
-    public Format getDataFormat() {
-        return mDataFormat;
-    }
-
-    public interface OnWheelChangeListener<T> {
-        void onWheelSelected(T item, int position);
+    public interface OnWheelChangeListener {
+        void onWheelSelected(String item, int position);
     }
 
 

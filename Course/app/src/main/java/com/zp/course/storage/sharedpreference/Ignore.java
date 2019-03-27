@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
  * @since 2019/3/12
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
+@Target({ElementType.FIELD})
 public @interface Ignore {
 
 }

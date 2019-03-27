@@ -17,4 +17,9 @@
     <dimen name="tab_padding_end">2dp</dimen>
 
     <dimen name="divider_height">1dp</dimen>
+
+    <dimen name="top_margin">16dp</dimen>
+    <dimen name="normal_padding">16dp</dimen>
+
+    <dimen name="option_item_height">48dp</dimen>
 </resources>

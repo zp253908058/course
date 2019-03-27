@@ -1,10 +1,17 @@
 package com.zp.course.ui.home;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
+import android.widget.ListPopupWindow;
+import android.widget.PopupWindow;
 
 import androidx.annotation.DrawableRes;
 import androidx.annotation.IntRange;
@@ -12,8 +19,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
+import androidx.core.widget.PopupWindowCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -26,11 +35,20 @@ import com.google.android.material.tabs.TabLayout;
 import com.zp.course.R;
 import com.zp.course.app.BaseActivity;
 import com.zp.course.app.FragmentViewPagerAdapter;
+import com.zp.course.app.UserManager;
+import com.zp.course.pop.DialogFactory;
+import com.zp.course.storage.database.AppDatabase;
+import com.zp.course.storage.database.dao.TimetableDao;
+import com.zp.course.storage.database.table.TimetableEntity;
 import com.zp.course.ui.course.CourseAddActivity;
 import com.zp.course.ui.home.fragment.CourseAllFragment;
 import com.zp.course.ui.home.fragment.CourseLateFragment;
 import com.zp.course.ui.timetable.TimetableActivity;
+import com.zp.course.ui.timetable.TimetableAddActivity;
 import com.zp.course.util.Toaster;
+import com.zp.course.util.Validator;
+
+import java.util.List;
 
 /**
  * Class description:
@@ -79,6 +97,19 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     public void onClick(View view) {
+        TimetableDao dao = AppDatabase.getInstance().getTimetableDao();
+        long userId = UserManager.getInstance().getUser().getId();
+        List<TimetableEntity> list = dao.getAll(userId);
+        if (Validator.isEmpty(list)) {
+            AlertDialog dialog = DialogFactory.createAlertDialog(this, "你还没有添加课表， 请先添加课表", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    TimetableAddActivity.go(HomeActivity.this);
+                }
+            });
+            dialog.show();
+            return;
+        }
         CourseAddActivity.go(this);
     }
 
