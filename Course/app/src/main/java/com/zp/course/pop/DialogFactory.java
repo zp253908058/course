@@ -3,6 +3,7 @@ package com.zp.course.pop;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
@@ -146,6 +147,15 @@ public class DialogFactory {
             return new DatePickerDialog(context, R.style.AlertDialogStyle, listener, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
         }
         return new DatePickerDialog(context, listener, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+    }
+
+    @SuppressLint("ObsoleteSdkInt")
+    public static TimePickerDialog createTimePickerDialog(Context context, TimePickerDialog.OnTimeSetListener listener) {
+        Calendar calendar = Calendar.getInstance();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            return new TimePickerDialog(context, R.style.AlertDialogStyle, listener, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
+        }
+        return new TimePickerDialog(context, listener, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
     }
 
     public static class DialogButton {

@@ -20,7 +20,7 @@ public class ClassEntity {
     @ColumnInfo(name = "start_time")
     private long startTime;  //开始时间
     @ColumnInfo(name = "section")
-    private int section;     //区间：上午或者下午
+    private int section;     //节数，第几节
     @ColumnInfo(name = "timetable_id")
     private long timetableId; //课表id
 

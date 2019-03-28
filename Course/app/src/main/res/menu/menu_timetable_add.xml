@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/menu_timetable_add_class"
-        android:icon="@drawable/ic_add_black"
+        android:icon="@drawable/ic_done_black"
         android:title="@string/menu_item_timetable_add"
         app:showAsAction="always" />
 </menu>

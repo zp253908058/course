@@ -7,6 +7,7 @@ import java.util.List;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
 
 /**
  * Class description:
@@ -30,4 +31,7 @@ public interface TimetableDao {
 
     @Query("select id from timetable where week_count = :week limit 1")
     long findByWeek(int week);
+
+    @Update
+    void update(TimetableEntity entity);
 }

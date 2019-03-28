@@ -1,6 +1,7 @@
 package com.zp.course.ui.timetable;
 
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,14 +12,15 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import com.zp.course.R;
 import com.zp.course.app.ToolbarActivity;
 import com.zp.course.pop.DialogFactory;
 import com.zp.course.storage.database.AppDatabase;
 import com.zp.course.storage.database.dao.TimetableDao;
+import com.zp.course.storage.database.table.ClassEntity;
 import com.zp.course.storage.database.table.TimetableEntity;
-import com.zp.course.util.Toaster;
 import com.zp.course.util.Validator;
 import com.zp.course.widget.WheelView;
 
@@ -29,7 +31,10 @@ import java.util.Locale;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.work.OneTimeWorkRequest;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Class description:
@@ -39,10 +44,9 @@ import androidx.work.OneTimeWorkRequest;
  * @see TimetableAddActivity
  * @since 2019/3/20
  */
-public class TimetableAddActivity extends ToolbarActivity implements DatePickerDialog.OnDateSetListener {
+public class TimetableAddActivity extends ToolbarActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, DialogInterface.OnClickListener {
 
     private static final String DATE_FORMAT = "%1$d-%2$d-%3$d";
-
 
     public static void go(Context context) {
         Intent intent = new Intent();
@@ -54,10 +58,13 @@ public class TimetableAddActivity extends ToolbarActivity implements DatePickerD
     private TextView mDurationText;
     private TextView mWeekText;
     private TextView mDateText;
+    private ClassAdapter mAdapter;
 
     private AlertDialog mDurationDialog;
     private AlertDialog mWeekDialog;
     private DatePickerDialog mDatePickerDialog;
+    private TimePickerDialog mTimePickerDialog;
+    private AlertDialog mPromitDialog;
     private long mStartMills;
 
     private TimetableEntity mEntity = new TimetableEntity();
@@ -68,7 +75,7 @@ public class TimetableAddActivity extends ToolbarActivity implements DatePickerD
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timetable_add_layout);
         showFloatingButton(true);
-        setFloatingIcon(getDrawable(R.drawable.ic_done_black));
+        setFloatingIcon(getDrawable(R.drawable.ic_add_black));
 
         initView();
     }
@@ -78,6 +85,13 @@ public class TimetableAddActivity extends ToolbarActivity implements DatePickerD
         mDurationText = findViewById(R.id.timetable_add_duration);
         mWeekText = findViewById(R.id.timetable_add_week_count);
         mDateText = findViewById(R.id.timetable_add_date);
+
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        mAdapter = new ClassAdapter(null);
+        recyclerView.setAdapter(mAdapter);
 
         List<String> duration = Arrays.asList(getResources().getStringArray(R.array.duration_select));
         mDurationDialog = DialogFactory.createOptionMenuDialog(this, duration, (parent, view, position, id) -> {
@@ -101,7 +115,8 @@ public class TimetableAddActivity extends ToolbarActivity implements DatePickerD
         mWeekDialog = builder.create();
 
         mDatePickerDialog = DialogFactory.createDatePickerDialog(this, this);
-
+        mTimePickerDialog = DialogFactory.createTimePickerDialog(this, this);
+        mPromitDialog = DialogFactory.createAlertDialog(this, "本期课表已存在，点击确定将对课表进行覆盖操作，是否继续？", this);
     }
 
     public void onClick(View view) {
@@ -134,7 +149,7 @@ public class TimetableAddActivity extends ToolbarActivity implements DatePickerD
 
     @Override
     public void onFloatingClick() {
-        attemptAdd();
+        mTimePickerDialog.show();
     }
 
 
@@ -146,11 +161,7 @@ public class TimetableAddActivity extends ToolbarActivity implements DatePickerD
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (mEntity.getId() == 0) {
-            Toaster.showToast("请先将课表插入到数据库中。");
-            return false;
-        }
-        ClassAddActivity.go(this, mEntity.getId());
+        attemptAdd();
         return true;
     }
 
@@ -180,17 +191,19 @@ public class TimetableAddActivity extends ToolbarActivity implements DatePickerD
             return;
         }
 
-        boolean check = mDao.findByWeek(Integer.parseInt(week)) > 0;
-        if (check) {
-            Toaster.showToast("第" + week + "课表已存在。");
-            return;
-        }
-
         mEntity.setName(name);
         mEntity.setDuration(Integer.parseInt(duration));
         mEntity.setWeekCount(Integer.parseInt(week));
         mEntity.setStartMills(mStartMills);
         mEntity.setUpdateTime(System.currentTimeMillis());
+
+        long id = mDao.findByWeek(Integer.parseInt(week));
+        boolean check = id > 0;
+        if (check) {
+            mEntity.setId(id);
+            mPromitDialog.show();
+            return;
+        }
         mDao.add(mEntity);
         mEntity = mDao.getLastOne();
     }
@@ -202,6 +215,21 @@ public class TimetableAddActivity extends ToolbarActivity implements DatePickerD
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month, dayOfMonth);
         mStartMills = calendar.getTimeInMillis();
+    }
+
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+        mDao.update(mEntity);
+    }
+
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        ClassEntity entity = new ClassEntity();
+        entity.setSection(mAdapter.getItemCount() + 1);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(0, 0, 0, hourOfDay, minute);
+        entity.setStartTime(calendar.getTimeInMillis());
+
     }
 }
 
