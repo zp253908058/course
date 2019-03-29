@@ -1,12 +1,17 @@
 package com.zp.course.storage.database.dao;
 
+import com.zp.course.model.TimetableClassEntity;
+import com.zp.course.storage.database.table.ClassEntity;
 import com.zp.course.storage.database.table.TimetableEntity;
 
 import java.util.List;
 
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Transaction;
 import androidx.room.Update;
 
 /**
@@ -20,18 +25,31 @@ import androidx.room.Update;
 @Dao
 public interface TimetableDao {
 
-    @Query("select * from timetable where user_id = :userId")
+    @Query("select * from timetable where user_id = :userId order by timetable_term")
     List<TimetableEntity> getAll(long userId);
 
     @Insert
+    @Transaction
     void add(TimetableEntity entity);
 
     @Query("select * from timetable order by update_time desc limit 1")
     TimetableEntity getLastOne();
 
-    @Query("select id from timetable where week_count = :week limit 1")
-    long findByWeek(int week);
+    @Query("select * from timetable where id = :id")
+    TimetableClassEntity findById(long id);
+
+    @Query("select id from timetable where timetable_term = :term limit 1")
+    long findByTerm(int term);
 
     @Update
+    @Transaction
     void update(TimetableEntity entity);
+
+    @Delete
+    @Transaction
+    void deleteClass(ClassEntity entity);
+
+    @Transaction
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertClass(List<ClassEntity> list);
 }

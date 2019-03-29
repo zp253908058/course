@@ -1,33 +1,20 @@
 package com.zp.course.ui.home;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
-import android.widget.ListPopupWindow;
-import android.widget.PopupWindow;
 
-import androidx.annotation.DrawableRes;
-import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.UiThread;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
-import androidx.core.widget.PopupWindowCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.navigation.NavigationView;
@@ -44,7 +31,7 @@ import com.zp.course.ui.course.CourseAddActivity;
 import com.zp.course.ui.home.fragment.CourseAllFragment;
 import com.zp.course.ui.home.fragment.CourseLateFragment;
 import com.zp.course.ui.timetable.TimetableActivity;
-import com.zp.course.ui.timetable.TimetableAddActivity;
+import com.zp.course.ui.timetable.TimetableAddOrUpdateActivity;
 import com.zp.course.util.Toaster;
 import com.zp.course.util.Validator;
 
@@ -104,7 +91,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             AlertDialog dialog = DialogFactory.createAlertDialog(this, "你还没有添加课表， 请先添加课表", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    TimetableAddActivity.go(HomeActivity.this);
+                    TimetableAddOrUpdateActivity.go(HomeActivity.this);
                 }
             });
             dialog.show();

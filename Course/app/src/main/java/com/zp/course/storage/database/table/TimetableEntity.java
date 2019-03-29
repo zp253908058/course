@@ -1,10 +1,7 @@
 package com.zp.course.storage.database.table;
 
-import java.util.List;
-
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 /**

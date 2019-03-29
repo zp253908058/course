@@ -6,12 +6,12 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.zp.course.R;
+import com.zp.course.app.RecyclerViewTouchListener;
 import com.zp.course.app.ToolbarActivity;
 import com.zp.course.app.UserManager;
 import com.zp.course.storage.database.AppDatabase;
 import com.zp.course.storage.database.dao.TimetableDao;
 import com.zp.course.storage.database.table.TimetableEntity;
-import com.zp.course.ui.sign.LoginActivity;
 
 import java.util.List;
 
@@ -30,7 +30,9 @@ import androidx.recyclerview.widget.RecyclerView;
  * @see TimetableActivity
  * @since 2019/3/20
  */
-public class TimetableActivity extends ToolbarActivity {
+public class TimetableActivity extends ToolbarActivity implements RecyclerViewTouchListener.OnItemClickListener {
+
+    private static final int REQUEST_CODE = 0x01 << 1;
 
     public static void go(Context context) {
         Intent intent = new Intent();
@@ -39,6 +41,7 @@ public class TimetableActivity extends ToolbarActivity {
     }
 
     private TimetableAdapter mAdapter;
+    TimetableDao mDao = AppDatabase.getInstance().getTimetableDao();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,20 +56,33 @@ public class TimetableActivity extends ToolbarActivity {
         view.setLayoutManager(new LinearLayoutManager(this));
         view.setItemAnimator(new DefaultItemAnimator());
         view.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        view.addOnItemTouchListener(new RecyclerViewTouchListener(this, this));
         mAdapter = new TimetableAdapter(null);
         view.setAdapter(mAdapter);
-
 
         obtainData();
     }
 
     private void obtainData() {
-        TimetableDao dao = AppDatabase.getInstance().getTimetableDao();
-        List<TimetableEntity> list = dao.getAll(UserManager.getInstance().getUser().getId());
+        List<TimetableEntity> list = mDao.getAll(UserManager.getInstance().getUser().getId());
         mAdapter.setItems(list);
     }
 
     public void onClick(View view) {
-        TimetableAddActivity.go(this);
+        TimetableAddOrUpdateActivity.goForResult(this, REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != RESULT_OK) {
+            return;
+        }
+        obtainData();
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        TimetableAddOrUpdateActivity.goForResult(this, mAdapter.getItem(position).getId(), REQUEST_CODE);
     }
 }

@@ -67,7 +67,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/timetable_add_week_count_layout"
+                android:id="@+id/timetable_add_term_layout"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/option_item_height"
                 android:onClick="onClick"
@@ -79,6 +79,31 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:text="@string/hint_timetable_term" />
+
+                <TextView
+                    android:id="@+id/timetable_add_term"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:gravity="end|center_vertical"
+                    tools:text="ssss"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/timetable_add_week_count_layout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/option_item_height"
+                android:onClick="onClick"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/TextViewStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="@string/hint_timetable_week_count" />
 
                 <TextView
                     android:id="@+id/timetable_add_week_count"

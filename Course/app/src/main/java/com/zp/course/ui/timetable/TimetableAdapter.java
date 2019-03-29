@@ -6,6 +6,7 @@ import com.zp.course.R;
 import com.zp.course.app.RecyclerAdapter;
 import com.zp.course.app.RecyclerViewHolder;
 import com.zp.course.storage.database.table.TimetableEntity;
+import com.zp.course.util.DateTimeUtils;
 
 import java.util.List;
 
@@ -45,7 +46,7 @@ public class TimetableAdapter extends RecyclerAdapter<TimetableEntity> {
             name.setText(item.getName());
             term.setText(String.valueOf(item.getTerm()));
             duration.setText(String.valueOf(item.getDuration()));
-            startDate.setText(String.valueOf(item.getStartMills()));
+            startDate.setText(DateTimeUtils.getDate(item.getStartMills()));
         }
     }
 }

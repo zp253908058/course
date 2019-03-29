@@ -24,7 +24,7 @@ import androidx.annotation.Nullable;
  */
 public class ClassAdapter extends RecyclerAdapter<ClassEntity> {
 
-    Calendar mCalendar = Calendar.getInstance();
+    private Calendar mCalendar = Calendar.getInstance();
 
     /**
      * the constructor of this class.

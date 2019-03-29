@@ -93,6 +93,16 @@ public class DateTimeUtils {
     }
 
     /**
+     * 返回带格式的日期
+     *
+     * @param millis 毫秒数
+     * @return yyyy-MM-dd
+     */
+    public static String getDate(long millis) {
+        return getFormatString(millis, DEFAULT_DATE_FORMAT);
+    }
+
+    /**
      * 返回带格式的时间
      *
      * @param millis 毫秒数

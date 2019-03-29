@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -20,6 +21,7 @@ import com.zp.course.R;
 import com.zp.course.app.ListViewAdapter;
 import com.zp.course.app.ViewHolder;
 import com.zp.course.util.Validator;
+import com.zp.course.widget.WheelView;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -156,6 +158,24 @@ public class DialogFactory {
             return new TimePickerDialog(context, R.style.AlertDialogStyle, listener, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
         }
         return new TimePickerDialog(context, listener, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
+    }
+
+    public static AlertDialog createWheelDialog(Context context, @ArrayRes int arrayRes, WheelView.OnWheelChangeListener wheelChangeListener, DialogInterface.OnClickListener positiveListener, DialogInterface.OnClickListener negativeListener) {
+        return createWheelDialog(context, arrayRes, 0, "00", wheelChangeListener, positiveListener, negativeListener);
+    }
+
+    public static AlertDialog createWheelDialog(Context context, @ArrayRes int arrayRes, int currentPosition, String maximumWidthText, WheelView.OnWheelChangeListener wheelChangeListener, DialogInterface.OnClickListener positiveListener, DialogInterface.OnClickListener negativeListener) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogStyle_NoTitle);
+        View view = LayoutInflater.from(context).inflate(R.layout.common_wheel_view, null);
+        WheelView wheelView = view.findViewById(R.id.wheel_view);
+        wheelView.setDataList(Arrays.asList(context.getResources().getStringArray(arrayRes)));
+        wheelView.setCurrentPosition(currentPosition, true);
+        wheelView.setOnWheelChangeListener(wheelChangeListener);
+        wheelView.setMaximumWidthText(maximumWidthText);
+        builder.setPositiveButton(context.getString(R.string.text_ok), positiveListener);
+        builder.setNegativeButton(context.getString(R.string.text_cancel), negativeListener);
+        builder.setView(view);
+        return builder.create();
     }
 
     public static class DialogButton {
