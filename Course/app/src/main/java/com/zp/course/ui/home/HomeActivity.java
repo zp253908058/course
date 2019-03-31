@@ -1,7 +1,6 @@
 package com.zp.course.ui.home;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -123,12 +122,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         long userId = UserManager.getInstance().getUser().getId();
         List<TimetableEntity> list = dao.getAll(userId);
         if (Validator.isEmpty(list)) {
-            AlertDialog dialog = DialogFactory.createAlertDialog(this, "你还没有添加课表， 请先添加课表", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    TimetableAddOrUpdateActivity.go(HomeActivity.this);
-                }
-            });
+            AlertDialog dialog = DialogFactory.createAlertDialog(this, "你还没有添加课表， 请先添加课表", (dialog1, which) -> TimetableAddOrUpdateActivity.go(HomeActivity.this));
             dialog.show();
             return;
         }
