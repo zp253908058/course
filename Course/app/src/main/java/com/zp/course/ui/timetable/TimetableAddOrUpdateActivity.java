@@ -84,10 +84,12 @@ public class TimetableAddOrUpdateActivity extends ToolbarActivity implements Dat
     private ClassAdapter mAdapter;
     private int mClickPosition = INVALID_POSITION;
     private int mDeletePosition = INVALID_POSITION;
+    private String mDeleteTipString;
 
     private AlertDialog mDurationDialog;
     private AlertDialog mTermDialog;
     private AlertDialog mWeekCountDialog;
+    private AlertDialog mDeleteDialog;
     private DatePickerDialog mDatePickerDialog;
     private TimePickerDialog mTimePickerDialog;
     private long mStartMills;
@@ -137,11 +139,12 @@ public class TimetableAddOrUpdateActivity extends ToolbarActivity implements Dat
             mStartMills = mEntity.getTimetable().getStartMills();
             mDateText.setText(DateTimeUtils.getDate(mStartMills));
             mAdapter.setItems(mEntity.getClassInfo());
-            mToolbar.setTitle(R.string.label_timetable_add);
+            setTitle(R.string.label_timetable_update);
         } else {
             mEntity = new TimetableClassEntity();
-            mToolbar.setTitle(R.string.label_timetable_update);
         }
+
+        mDeleteTipString = getString(R.string.tip_timetable_add_delete_class);
 
         List<String> duration = Arrays.asList(getResources().getStringArray(R.array.duration_select));
         mDurationDialog = DialogFactory.createOptionMenuDialog(this, duration, (parent, view, position, id) -> {
@@ -167,8 +170,16 @@ public class TimetableAddOrUpdateActivity extends ToolbarActivity implements Dat
             mTermText.setText("");
             dialog.dismiss();
         });
+        mDeleteDialog = DialogFactory.createAlertDialog(this, "", (dialog, which) -> {
+            ClassEntity entity = mAdapter.getItem(mDeletePosition);
+            mDao.deleteClass(entity);
+            mAdapter.remove(mDeletePosition);
+            mDeletePosition = INVALID_POSITION;
+            dialog.dismiss();
+        });
 
         mDatePickerDialog = DialogFactory.createDatePickerDialog(this, this);
+
         mTimePickerDialog = DialogFactory.createTimePickerDialog(this, this);
     }
 
@@ -336,9 +347,11 @@ public class TimetableAddOrUpdateActivity extends ToolbarActivity implements Dat
 
     @Override
     public void onItemLongClick(View view, int position) {
+        mDeletePosition = position;
         ClassEntity entity = mAdapter.getItem(position);
-        mDao.deleteClass(entity);
-        mAdapter.remove(position);
+        String deleteString = String.format(mDeleteTipString, DateTimeUtils.getTime(entity.getStartTime()));
+        mDeleteDialog.setMessage(deleteString);
+        mDeleteDialog.show();
     }
 }
 

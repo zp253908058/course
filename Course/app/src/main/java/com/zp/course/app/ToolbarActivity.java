@@ -1,6 +1,5 @@
 package com.zp.course.app;
 
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
@@ -15,6 +14,7 @@ import com.zp.course.util.Validator;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.res.ResourcesCompat;
@@ -64,7 +64,6 @@ public abstract class ToolbarActivity extends BaseActivity {
     }
 
 
-
     public void showNavigationIcon(boolean isShow) {
         ActionBar bar = getSupportActionBar();
         if (Validator.isNotNull(bar)) {
@@ -103,5 +102,19 @@ public abstract class ToolbarActivity extends BaseActivity {
     @Override
     public void setContentView(View view, ViewGroup.LayoutParams params) {
 
+    }
+
+    public void setTitle(@StringRes int stringRes) {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(stringRes);
+        }
+    }
+
+    public void setTitle(String title) {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(title);
+        }
     }
 }

@@ -7,16 +7,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
-
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.zp.course.R;
@@ -34,8 +25,20 @@ import com.zp.course.ui.timetable.TimetableActivity;
 import com.zp.course.ui.timetable.TimetableAddOrUpdateActivity;
 import com.zp.course.util.Toaster;
 import com.zp.course.util.Validator;
+import com.zp.course.util.log.Logger;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.core.view.ViewCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 /**
  * Class description:
@@ -55,6 +58,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
     private long mLastPressedTime = 0;
     private DrawerLayout mDrawerLayout;
+    private FloatingActionButton mActionButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,11 +80,42 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         NavigationView navigationView = findViewById(R.id.main_navigation_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        mActionButton = findViewById(R.id.main_floating_action_button);
+
 
         TabLayout tabLayout = findViewById(R.id.tab_layout);
         ViewPager viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(new FragmentViewPagerAdapter(getSupportFragmentManager(), this));
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                if (position == 0) {
+                    fadedOut(positionOffset);
+                } else {
+                    fadedIn(positionOffset);
+                }
+                Logger.e(String.valueOf(positionOffset));
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                mActionButton.setVisibility(position == 0 ? View.VISIBLE : View.GONE);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         tabLayout.setupWithViewPager(viewPager);
+    }
+
+    private void fadedIn(float offset) {
+        ViewCompat.animate(mActionButton).scaleX(offset).scaleX(offset).start();
+    }
+
+    private void fadedOut(float offset) {
+        ViewCompat.animate(mActionButton).scaleX(offset).scaleX(offset).start();
     }
 
     public void onClick(View view) {
