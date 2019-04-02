@@ -113,7 +113,7 @@
             android:inputType="textMultiLine"
             android:padding="8dp"
             android:textSize="@dimen/normal_text_size"
-            tools:text="按时间大幅拉升的就发是发生了的风景士大夫阿斯弗阿萨的浪费打扫房间阿斯顿弗利萨会计法啊十六分啊撒旦解放速度防水等级" />
+            tools:text="按时间大幅拉升的就发是发生了的风景士大夫阿斯弗阿萨的浪费打扫房" />
 
         <include layout="@layout/common_recycler_view" />
 

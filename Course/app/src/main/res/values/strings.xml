@@ -19,6 +19,9 @@
     <string name="text_cancel">取消</string>
 
     <string name="prompt_load_message">加载中……</string>
+    <string name="prompt_select_timetable_first">请先选择课表！</string>
+    <string name="prompt_select_week">请设置该课程在星期几！</string>
+    <string name="prompt_select_section">请设置该课程在第几节！</string>
 
 
     <string name="hint_register">注册></string>
@@ -32,6 +35,10 @@
     <string name="hint_course_name">课程名:</string>
     <string name="hint_course_number">课程编号:</string>
     <string name="hint_course_timetable">课表:</string>
+    <string name="hint_course_teacher_name">教师:</string>
+    <string name="hint_course_address">教室:</string>
+    <string name="hint_course_day_in_week">星期:</string>
+    <string name="hint_course_section">节次:</string>
     <string name="hint_description">描述</string>
 
     <string name="tip_login_failed">用户名或者密码错误！</string>
@@ -56,11 +63,14 @@
     <string name="error_timetable_term_empty">学期为空！</string>
     <string name="error_timetable_week_empty">周数为空！</string>
     <string name="error_timetable_start_date_empty">课表开始时间为空！</string>
+    <string name="error_course_address_null">教室不能为空！</string>
 
     <string name="label_my_course">我的课程</string>
     <string name="label_login">登录</string>
     <string name="label_register">注册</string>
     <string name="label_course_add">课程添加</string>
+    <string name="label_course_info_add">课程信息添加</string>
+    <string name="label_course_info_update">课程信息更新</string>
     <string name="label_timetable">我的课表</string>
     <string name="label_timetable_add">新增课表</string>
     <string name="label_timetable_update">更新课表</string>

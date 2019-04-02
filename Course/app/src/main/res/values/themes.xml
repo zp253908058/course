@@ -15,7 +15,7 @@
         <!--文字辅助色-->
         <item name="android:textColorSecondary">@color/text_color_secondary</item>
         <!--页面背景色-->
-        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:windowBackground">@color/window_background_color</item>
         <!--RecyclerView分割线颜色-->
         <item name="android:listDivider">@drawable/shape_divider</item>
         <!--解决textView全局大小写问题-->

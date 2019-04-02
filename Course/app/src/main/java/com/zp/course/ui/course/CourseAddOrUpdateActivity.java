@@ -17,13 +17,10 @@ import com.zp.course.pop.DialogFactory;
 import com.zp.course.storage.database.AppDatabase;
 import com.zp.course.storage.database.dao.CourseDao;
 import com.zp.course.storage.database.dao.TimetableDao;
-import com.zp.course.storage.database.table.ClassEntity;
 import com.zp.course.storage.database.table.CourseEntity;
 import com.zp.course.storage.database.table.CourseInfoEntity;
 import com.zp.course.storage.database.table.TimetableEntity;
-import com.zp.course.ui.timetable.ClassAdapter;
 import com.zp.course.ui.timetable.TimetableAddOrUpdateActivity;
-import com.zp.course.util.DateTimeUtils;
 import com.zp.course.util.Toaster;
 import com.zp.course.util.Validator;
 
@@ -47,12 +44,20 @@ import androidx.recyclerview.widget.RecyclerView;
  */
 public class CourseAddOrUpdateActivity extends ToolbarActivity implements RecyclerViewTouchListener.OnItemClickListener, RecyclerViewTouchListener.OnItemLongClickListener {
 
+    private static final String KEY_ID = "id";
     private static final int REQUEST_CODE = 0x1 << 1;
     private static final int INVALID_POSITION = -1;
 
     public static void go(Context context) {
+        go(context, 0);
+    }
+
+    public static void go(Context context, long courseId) {
         Intent intent = new Intent();
         intent.setClass(context, CourseAddOrUpdateActivity.class);
+        if (courseId > 0) {
+            intent.putExtra(KEY_ID, courseId);
+        }
         context.startActivity(intent);
     }
 
@@ -105,7 +110,6 @@ public class CourseAddOrUpdateActivity extends ToolbarActivity implements Recycl
             mTimetableDialog.dismiss();
         });
 
-
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
@@ -126,7 +130,11 @@ public class CourseAddOrUpdateActivity extends ToolbarActivity implements Recycl
 
     @Override
     public void onFloatingClick() {
-        CourseInfoAddOrUpdateActivity.goForResult(this, REQUEST_CODE);
+        if (mTimetableId == 0) {
+            Toaster.showToast(R.string.prompt_select_timetable_first);
+            return;
+        }
+        CourseInfoAddOrUpdateActivity.goForResult(this, mTimetableId, REQUEST_CODE);
     }
 
     public void onClick(View view) {
@@ -135,7 +143,7 @@ public class CourseAddOrUpdateActivity extends ToolbarActivity implements Recycl
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_timetable_add, menu);
+        getMenuInflater().inflate(R.menu.menu_done, menu);
         return true;
     }
 
@@ -186,7 +194,12 @@ public class CourseAddOrUpdateActivity extends ToolbarActivity implements Recycl
 
     @Override
     public void onItemClick(View view, int position) {
-        CourseInfoAddOrUpdateActivity.goForResult(this, mAdapter.getItem(position).getId(), REQUEST_CODE);
+        if (mTimetableId == 0) {
+            Toaster.showToast(R.string.prompt_select_timetable_first);
+            return;
+        }
+        CourseInfoEntity entity = mAdapter.getItem(position);
+        CourseInfoAddOrUpdateActivity.goForResult(this, mTimetableId, entity, REQUEST_CODE);
     }
 
     @Override

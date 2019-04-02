@@ -47,9 +47,12 @@ public interface TimetableDao {
 
     @Delete
     @Transaction
-    void deleteClass(ClassEntity entity);
+    void deleteClasses(List<ClassEntity> entities);
 
     @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertClass(List<ClassEntity> list);
+
+    @Query("select * from class_info_t where timetable_id = :timetableId")
+    List<ClassEntity> getClassList(long timetableId);
 }

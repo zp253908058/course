@@ -91,6 +91,7 @@ public class TimetableAddOrUpdateActivity extends ToolbarActivity implements Dat
     private AlertDialog mWeekCountDialog;
     private AlertDialog mDeleteDialog;
     private DatePickerDialog mDatePickerDialog;
+    private List<ClassEntity> mDeleteHolder;
     private TimePickerDialog mTimePickerDialog;
     private long mStartMills;
 
@@ -105,6 +106,18 @@ public class TimetableAddOrUpdateActivity extends ToolbarActivity implements Dat
         setFloatingIcon(getDrawable(R.drawable.ic_add_black));
 
         initView();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (Validator.isEmpty(mDeleteHolder)) {
+            return;
+        }
+        if (mAdapter.getItemCount() == 0) {
+            return;
+        }
+        mDao.deleteClasses(mDeleteHolder);
     }
 
     private void initView() {
@@ -172,11 +185,12 @@ public class TimetableAddOrUpdateActivity extends ToolbarActivity implements Dat
         });
         mDeleteDialog = DialogFactory.createAlertDialog(this, "", (dialog, which) -> {
             ClassEntity entity = mAdapter.getItem(mDeletePosition);
-            mDao.deleteClass(entity);
+            mDeleteHolder.add(entity);
             mAdapter.remove(mDeletePosition);
             mDeletePosition = INVALID_POSITION;
             dialog.dismiss();
         });
+        mDeleteHolder = new ArrayList<>();
 
         mDatePickerDialog = DialogFactory.createDatePickerDialog(this, this);
 
@@ -226,7 +240,7 @@ public class TimetableAddOrUpdateActivity extends ToolbarActivity implements Dat
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_timetable_add, menu);
+        getMenuInflater().inflate(R.menu.menu_done, menu);
         return true;
     }
 

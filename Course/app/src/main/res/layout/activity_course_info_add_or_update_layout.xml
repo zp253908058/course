@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/top_margin"
+        android:background="@drawable/shape_rect"
+        android:divider="@color/divider_color"
+        android:orientation="vertical"
+        android:showDividers="middle">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/option_item_height"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/normal_padding"
+            android:paddingEnd="@dimen/normal_padding">
+
+            <TextView
+                style="@style/TextViewStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="@string/hint_course_teacher_name" />
+
+            <EditText
+                android:id="@+id/course_add_teacher_name"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@null"
+                android:gravity="end|center_vertical"
+                android:imeOptions="actionNext"
+                android:inputType="textAutoComplete"
+                android:lines="1"
+                tools:text="ssssssss" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/option_item_height"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/normal_padding"
+            android:paddingEnd="@dimen/normal_padding">
+
+            <TextView
+                style="@style/TextViewStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="@string/hint_course_address" />
+
+            <EditText
+                android:id="@+id/course_add_address"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@null"
+                android:gravity="end|center_vertical"
+                android:imeOptions="actionDone"
+                android:inputType="textAutoComplete"
+                android:lines="1"
+                tools:text="ssssssss" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/course_add_day_in_week_layout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/option_item_height"
+            android:onClick="onClick"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/normal_padding"
+            android:paddingEnd="@dimen/normal_padding">
+
+            <TextView
+                style="@style/TextViewStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="@string/hint_course_day_in_week" />
+
+            <TextView
+                android:id="@+id/course_add_day_in_week"
+                style="@style/TextViewStyle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="end|center_vertical"
+                tools:text="ssssssss" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/course_add_section_layout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/option_item_height"
+            android:onClick="onClick"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/normal_padding"
+            android:paddingEnd="@dimen/normal_padding">
+
+            <TextView
+                style="@style/TextViewStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="@string/hint_course_section" />
+
+            <TextView
+                android:id="@+id/course_add_section"
+                style="@style/TextViewStyle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="end|center_vertical"
+                tools:text="ssssssss" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/course_add_description"
+        android:layout_width="match_parent"
+        android:layout_height="192dp"
+        android:layout_margin="@dimen/normal_padding"
+        android:background="@drawable/background_selector_edit_text"
+        android:gravity="start|top"
+        android:hint="@string/hint_description"
+        android:imeOptions="actionNext"
+        android:inputType="textMultiLine"
+        android:padding="8dp"
+        android:textSize="@dimen/normal_text_size"
+        tools:text="按时间大幅拉升的就发是发生了的风景士大夫阿斯弗阿萨的浪费打扫房" />
+
+
+</LinearLayout>

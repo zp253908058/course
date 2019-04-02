@@ -51,4 +51,14 @@
         <item>29</item>
         <item>30</item>
     </string-array>
+
+    <string-array name="week">
+        <item>星期一</item>
+        <item>星期二</item>
+        <item>星期三</item>
+        <item>星期四</item>
+        <item>星期五</item>
+        <item>星期六</item>
+        <item>星期日</item>
+    </string-array>
 </resources>

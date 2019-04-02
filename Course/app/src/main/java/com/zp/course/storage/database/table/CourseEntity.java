@@ -18,6 +18,8 @@ public class CourseEntity {
 
     @PrimaryKey(autoGenerate = true)
     private long id;                 //id
+    @ColumnInfo(name = "timetable_id")
+    private long timetableId;        //课表id
     @ColumnInfo(name = "course_name")
     private String name;          //课程名
     @ColumnInfo(name = "course_number")
@@ -37,6 +39,14 @@ public class CourseEntity {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public long getTimetableId() {
+        return timetableId;
+    }
+
+    public void setTimetableId(long timetableId) {
+        this.timetableId = timetableId;
     }
 
     public String getName() {

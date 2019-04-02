@@ -182,6 +182,24 @@ public class DialogFactory {
         return builder.create();
     }
 
+    public static AlertDialog createWheelDialog(Context context, List<String> data, WheelView.OnWheelChangeListener wheelChangeListener, DialogInterface.OnClickListener positiveListener, DialogInterface.OnClickListener negativeListener) {
+        return createWheelDialog(context, data, 0, "00", wheelChangeListener, positiveListener, negativeListener);
+    }
+
+    public static AlertDialog createWheelDialog(Context context, List<String> data, int currentPosition, String maximumWidthText, WheelView.OnWheelChangeListener wheelChangeListener, DialogInterface.OnClickListener positiveListener, DialogInterface.OnClickListener negativeListener) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogStyle_NoTitle);
+        View view = LayoutInflater.from(context).inflate(R.layout.common_wheel_view, null);
+        WheelView wheelView = view.findViewById(R.id.wheel_view);
+        wheelView.setDataList(data);
+        wheelView.setCurrentPosition(currentPosition, true);
+        wheelView.setOnWheelChangeListener(wheelChangeListener);
+        wheelView.setMaximumWidthText(maximumWidthText);
+        builder.setPositiveButton(context.getString(R.string.text_ok), positiveListener);
+        builder.setNegativeButton(context.getString(R.string.text_cancel), negativeListener);
+        builder.setView(view);
+        return builder.create();
+    }
+
     public static class DialogButton {
         private String text;
         private DialogInterface.OnClickListener listener;

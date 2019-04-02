@@ -52,7 +52,7 @@
 
         <activity
             android:name=".ui.course.CourseInfoAddOrUpdateActivity"
-            android:label="@string/label_course_add"
+            android:label="@string/label_course_info_add"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustNothing" />
