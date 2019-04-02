@@ -62,6 +62,10 @@ public class DialogFactory {
         return builder.create();
     }
 
+    public static AlertDialog createAlertDialog(Context context, String message, DialogInterface.OnClickListener positiveButton, DialogInterface.OnClickListener negativeButton) {
+        return createAlertDialog(context, context.getString(R.string.text_prompt), message, new DialogButton(context.getString(R.string.text_ok), positiveButton), new DialogButton(context.getString(R.string.text_cancel), negativeButton), null);
+    }
+
     public static AlertDialog createAlertDialog(Context context, String message, DialogInterface.OnClickListener positiveButton) {
         return createAlertDialog(context, context.getString(R.string.text_prompt), message, new DialogButton(context.getString(R.string.text_ok), positiveButton), new DialogButton(context.getString(R.string.text_cancel), null), null);
     }

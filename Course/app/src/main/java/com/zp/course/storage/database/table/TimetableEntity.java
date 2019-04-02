@@ -95,4 +95,9 @@ public class TimetableEntity {
     public void setUpdateTime(long updateTime) {
         this.updateTime = updateTime;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

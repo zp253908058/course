@@ -12,7 +12,6 @@
 
         <activity
             android:name=".ui.splash.SplashActivity"
-            android:exported="true"
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:theme="@style/SplashStyle">
@@ -40,32 +39,36 @@
 
         <activity
             android:name=".ui.home.HomeActivity"
-            android:exported="false"
             android:label="@string/label_my_course"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ui.course.CourseAddActivity"
-            android:exported="false"
+            android:name=".ui.course.CourseAddOrUpdateActivity"
             android:label="@string/label_course_add"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustNothing" />
+
+        <activity
+            android:name=".ui.course.CourseInfoAddOrUpdateActivity"
+            android:label="@string/label_course_add"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustNothing" />
 
         <activity
             android:name=".ui.timetable.TimetableActivity"
-            android:exported="false"
             android:label="@string/label_timetable"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
 
         <activity
             android:name=".ui.timetable.TimetableAddOrUpdateActivity"
-            android:exported="false"
             android:label="@string/label_timetable_add"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustNothing"/>
+            android:windowSoftInputMode="stateHidden|adjustNothing" />
 
     </application>
 </manifest>

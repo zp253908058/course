@@ -3,6 +3,7 @@ package com.zp.course.ui.home;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -12,29 +13,17 @@ import com.google.android.material.tabs.TabLayout;
 import com.zp.course.R;
 import com.zp.course.app.BaseActivity;
 import com.zp.course.app.FragmentViewPagerAdapter;
-import com.zp.course.app.UserManager;
-import com.zp.course.pop.DialogFactory;
-import com.zp.course.storage.database.AppDatabase;
-import com.zp.course.storage.database.dao.TimetableDao;
-import com.zp.course.storage.database.table.TimetableEntity;
-import com.zp.course.ui.course.CourseAddActivity;
+import com.zp.course.ui.course.CourseAddOrUpdateActivity;
 import com.zp.course.ui.home.fragment.CourseAllFragment;
 import com.zp.course.ui.home.fragment.CourseLateFragment;
 import com.zp.course.ui.timetable.TimetableActivity;
-import com.zp.course.ui.timetable.TimetableAddOrUpdateActivity;
 import com.zp.course.util.Toaster;
-import com.zp.course.util.Validator;
-import com.zp.course.util.log.Logger;
-
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
-import androidx.core.view.ViewCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
@@ -88,17 +77,22 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                if (position == 0) {
-                    fadedOut(positionOffset);
+                mActionButton.setVisibility(View.VISIBLE);
+                if (positionOffset != 0.0f) {
+                    mActionButton.setScaleX(1 - positionOffset);
+                    mActionButton.setScaleY(1 - positionOffset);
+                    mActionButton.setVisibility(View.VISIBLE);
                 } else {
-                    fadedIn(positionOffset);
+                    mActionButton.setScaleX(position == 0 ? 1 : 0);
+                    mActionButton.setScaleY(position == 0 ? 1 : 0);
+                    mActionButton.setVisibility(position == 0 ? View.VISIBLE : View.GONE);
                 }
-                Logger.e(String.valueOf(positionOffset));
+                Log.e("onPageScrolled", String.valueOf(positionOffset));
             }
 
             @Override
             public void onPageSelected(int position) {
-                mActionButton.setVisibility(position == 0 ? View.VISIBLE : View.GONE);
+
             }
 
             @Override
@@ -107,26 +101,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             }
         });
         tabLayout.setupWithViewPager(viewPager);
-    }
 
-    private void fadedIn(float offset) {
-        ViewCompat.animate(mActionButton).scaleX(offset).scaleX(offset).start();
-    }
-
-    private void fadedOut(float offset) {
-        ViewCompat.animate(mActionButton).scaleX(offset).scaleX(offset).start();
     }
 
     public void onClick(View view) {
-        TimetableDao dao = AppDatabase.getInstance().getTimetableDao();
-        long userId = UserManager.getInstance().getUser().getId();
-        List<TimetableEntity> list = dao.getAll(userId);
-        if (Validator.isEmpty(list)) {
-            AlertDialog dialog = DialogFactory.createAlertDialog(this, "你还没有添加课表， 请先添加课表", (dialog1, which) -> TimetableAddOrUpdateActivity.go(HomeActivity.this));
-            dialog.show();
-            return;
-        }
-        CourseAddActivity.go(this);
+        CourseAddOrUpdateActivity.go(this);
     }
 
     @Override
