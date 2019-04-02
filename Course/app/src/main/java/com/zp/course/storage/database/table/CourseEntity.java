@@ -26,6 +26,10 @@ public class CourseEntity {
     private String description;   //描述信息
     @ColumnInfo(name = "user_id")
     private long userId;          //用户id
+    @ColumnInfo(name = "start_week")
+    private int startWeek;        //开始周次
+    @ColumnInfo(name = "end_week")
+    private int endWeek;          //结束周次
 
     public long getId() {
         return id;
@@ -65,5 +69,21 @@ public class CourseEntity {
 
     public void setUserId(long userId) {
         this.userId = userId;
+    }
+
+    public int getStartWeek() {
+        return startWeek;
+    }
+
+    public void setStartWeek(int startWeek) {
+        this.startWeek = startWeek;
+    }
+
+    public int getEndWeek() {
+        return endWeek;
+    }
+
+    public void setEndWeek(int endWeek) {
+        this.endWeek = endWeek;
     }
 }

@@ -42,7 +42,8 @@
     <string name="tip_timetable_add_class_null">你还没有配置课程信息，请先添加课程信息！</string>
     <string name="tip_timetable_null">你还没有添加课表，请先添加课表！</string>
     <string name="tip_timetable_add_term_already_exist">该学期课表已存在，请重新选择！</string>
-    <string name="tip_timetable_add_delete_class">是否要删除%1$s这个课程吗?</string>
+    <string name="tip_timetable_add_delete_class">是否要删除%1$s这个课表配置吗?</string>
+    <string name="tip_course_add_delete">是否要删除星期%1$d的%2$s课程吗?</string>
 
     <string name="error_username_empty">用户名为空！</string>
     <string name="error_password_empty">密码为空！</string>

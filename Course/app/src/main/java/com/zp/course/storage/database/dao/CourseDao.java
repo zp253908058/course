@@ -1,10 +1,12 @@
 package com.zp.course.storage.database.dao;
 
 import com.zp.course.storage.database.table.CourseEntity;
+import com.zp.course.storage.database.table.CourseInfoEntity;
 
 import java.util.List;
 
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 
@@ -28,4 +30,7 @@ public interface CourseDao {
 
     @Query("select * from course where user_id = :userId")
     List<CourseEntity> getAll(long userId);
+
+    @Delete
+    void deleteCourseInfo(CourseInfoEntity entity);
 }

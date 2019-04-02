@@ -18,22 +18,18 @@ public class CourseInfoEntity {
 
     @PrimaryKey(autoGenerate = true)
     private long id;              //id
-    @ColumnInfo(name = "course_name")
-    private String name;          //课程名字
     @ColumnInfo(name = "course_id")
     private long courseId;        //课程id   CourseEntity.id
-    @ColumnInfo(name = "course_term")
-    private int term;             //学期
     @ColumnInfo(name = "teacher_name")
     private String teacherName;   //老师
     @ColumnInfo(name = "course_address")
     private String address;       //上课的教室
-    @ColumnInfo(name = "course_week")
-    private int week;             //周次
     @ColumnInfo(name = "day_in_week")
     private int dayInWeek;        //星期几
     @ColumnInfo(name = "course_section")
     private int section;          //第几节
+    @ColumnInfo
+    private String description;   //描述 如：实验，理论
 
     public long getId() {
         return id;
@@ -43,28 +39,12 @@ public class CourseInfoEntity {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public long getCourseId() {
         return courseId;
     }
 
     public void setCourseId(long courseId) {
         this.courseId = courseId;
-    }
-
-    public int getTerm() {
-        return term;
-    }
-
-    public void setTerm(int term) {
-        this.term = term;
     }
 
     public String getTeacherName() {
@@ -83,14 +63,6 @@ public class CourseInfoEntity {
         this.address = address;
     }
 
-    public int getWeek() {
-        return week;
-    }
-
-    public void setWeek(int week) {
-        this.week = week;
-    }
-
     public int getDayInWeek() {
         return dayInWeek;
     }
@@ -105,5 +77,13 @@ public class CourseInfoEntity {
 
     public void setSection(int section) {
         this.section = section;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
