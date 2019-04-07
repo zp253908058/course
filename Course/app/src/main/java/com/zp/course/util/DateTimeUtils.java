@@ -45,7 +45,7 @@ public class DateTimeUtils {
      * @return 指定格式的字符串
      */
     public static String getFormatString(long millis, SimpleDateFormat dateFormat) {
-        return dateFormat.format(new Date(millis));
+        return dateToString(new Date(millis), dateFormat);
     }
 
     /**
@@ -120,5 +120,13 @@ public class DateTimeUtils {
      */
     public static long timeToMills(String time) {
         return getFormatMills(time, DEFAULT_TIME_FORMAT);
+    }
+
+    public static String dateToString(Date date, SimpleDateFormat format) {
+        return format.format(date);
+    }
+
+    public static String dateToString(Date date) {
+        return dateToString(date, DEFAULT_DATE_TIME_FORMAT);
     }
 }

@@ -13,6 +13,7 @@ import com.zp.course.R;
 import com.zp.course.app.RecyclerViewTouchListener;
 import com.zp.course.app.ToolbarActivity;
 import com.zp.course.app.UserManager;
+import com.zp.course.model.CourseInfoContractEntity;
 import com.zp.course.pop.DialogFactory;
 import com.zp.course.storage.database.AppDatabase;
 import com.zp.course.storage.database.dao.CourseDao;
@@ -64,16 +65,26 @@ public class CourseAddOrUpdateActivity extends ToolbarActivity implements Recycl
     private EditText mNameText;
     private EditText mNumberText;
     private TextView mTimetableText;
+    private TextView mStartText;
+    private TextView mEndText;
     private EditText mDescriptionText;
     private CourseDao mCourseDao;
     private CourseAdapter mAdapter;
 
     private AlertDialog mTimetableDialog;
     private AlertDialog mDeleteDialog;
+    private AlertDialog mStartDialog;
+    private AlertDialog mEndDialog;
     private long mTimetableId = 0;
     private int mDeletePosition = INVALID_POSITION;
     private String mDeleteTipString;
     private long mUserId;
+
+    private CourseInfoContractEntity mEntity;
+    private List<String> mStartList;
+    private List<String> mEndList;
+    private TimetableDao mTimetableDao;
+    private TimetableEntity mTimetableEntity;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -88,13 +99,15 @@ public class CourseAddOrUpdateActivity extends ToolbarActivity implements Recycl
         mNameText = findViewById(R.id.course_add_name);
         mNumberText = findViewById(R.id.course_add_number);
         mTimetableText = findViewById(R.id.course_add_timetable);
+        mStartText = findViewById(R.id.course_add_start_week);
+        mEndText = findViewById(R.id.course_add_end_week);
         mDescriptionText = findViewById(R.id.course_add_description);
 
         mCourseDao = AppDatabase.getInstance().getCourseDao();
 
-        TimetableDao timetableDao = AppDatabase.getInstance().getTimetableDao();
+        mTimetableDao = AppDatabase.getInstance().getTimetableDao();
         mUserId = UserManager.getInstance().getUser().getId();
-        List<TimetableEntity> timetables = timetableDao.getAll(mUserId);
+        List<TimetableEntity> timetables = mTimetableDao.getAll(mUserId);
         AlertDialog promptDialog = DialogFactory.createAlertDialog(this, getString(R.string.tip_timetable_null), (dialog, which) -> {
             TimetableAddOrUpdateActivity.go(CourseAddOrUpdateActivity.this);
             finish();
@@ -105,9 +118,12 @@ public class CourseAddOrUpdateActivity extends ToolbarActivity implements Recycl
         }
         mTimetableDialog = DialogFactory.createOptionMenuDialog(this, timetables, (parent, view, position, id) -> {
             TimetableEntity item = (TimetableEntity) parent.getAdapter().getItem(position);
+            mTimetableEntity = item;
+            resetStartList(item.getWeekCount());
             mTimetableText.setText(item.toString());
             mTimetableId = item.getId();
             mTimetableDialog.dismiss();
+
         });
 
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
@@ -126,6 +142,49 @@ public class CourseAddOrUpdateActivity extends ToolbarActivity implements Recycl
             mDeletePosition = INVALID_POSITION;
             dialog.dismiss();
         });
+
+        mStartList = new ArrayList<>();
+        mStartDialog = DialogFactory.createWheelDialog(this, mStartList, (item, position) -> {
+            mStartText.setText(item);
+            resetEndList(Integer.parseInt(item), mTimetableEntity.getWeekCount());
+        }, (dialog, which) -> dialog.dismiss(), (dialog, which) -> {
+            mStartText.setText("");
+            dialog.dismiss();
+        });
+
+        mEndList = new ArrayList<>();
+        mEndDialog = DialogFactory.createWheelDialog(this, mEndList, (item, position) -> mEndText.setText(item), (dialog, which) -> dialog.dismiss(), (dialog, which) -> {
+            mEndText.setText("");
+            dialog.dismiss();
+        });
+
+        Intent intent = getIntent();
+        if (!intent.hasExtra(KEY_ID)) {
+            mEntity = new CourseInfoContractEntity();
+            mEntity.setCourse(new CourseEntity());
+            return;
+        }
+        long courseId = intent.getLongExtra(KEY_ID, 0);
+        setTitle(R.string.label_course_update);
+        mEntity = mCourseDao.findById(courseId);
+        mTimetableId = mEntity.getCourse().getTimetableId();
+        mTimetableEntity = mTimetableDao.getById(mTimetableId);
+        mTimetableText.setText(mTimetableEntity.getName());
+        mAdapter.setItems(mEntity.getCourseInfo());
+        resetStartList(mTimetableEntity.getWeekCount());
+    }
+
+    private void resetStartList(int total) {
+        mStartList.clear();
+        for (int i = 1; i <= total; i++) {
+            mStartList.add(String.valueOf(i));
+        }
+    }
+
+    private void resetEndList(int start, int end) {
+        for (int i = start; i <= end; i++) {
+            mEndList.add(String.valueOf(i));
+        }
     }
 
     @Override
@@ -138,7 +197,27 @@ public class CourseAddOrUpdateActivity extends ToolbarActivity implements Recycl
     }
 
     public void onClick(View view) {
-        mTimetableDialog.show();
+        int id = view.getId();
+        switch (id) {
+            case R.id.course_add_timetable_layout:
+                mTimetableDialog.show();
+                break;
+            case R.id.course_add_start_week_layout:
+                if (mTimetableId == 0) {
+                    Toaster.showToast(R.string.prompt_select_timetable_first);
+                    return;
+                }
+                mStartDialog.show();
+                break;
+            case R.id.course_add_end_week_layout:
+                if (Validator.isEmpty(mStartText.getText())) {
+                    Toaster.showToast("请先选择开始的周次。");
+                    return;
+                }
+                mEndDialog.show();
+                break;
+
+        }
     }
 
     @Override
@@ -168,20 +247,33 @@ public class CourseAddOrUpdateActivity extends ToolbarActivity implements Recycl
             return;
         }
 
+        if (mTimetableId == 0) {
+            Toaster.showToast(R.string.prompt_select_timetable);
+            return;
+        }
+
         String description = mDescriptionText.getText().toString();
+
+        CourseEntity entity = mEntity.getCourse();
+        entity.setUserId(mUserId);
+        entity.setName(name);
+        entity.setNumber(number);
+        entity.setDescription(description);
+        entity.setTimetableId(mTimetableId);
+
 
         boolean success = verify(name, number);
 
-        if (success) {
-            CourseEntity entity = new CourseEntity();
-            entity.setName(name);
-            entity.setNumber(number);
-            entity.setDescription(description);
-            entity.setUserId(UserManager.getInstance().getUser().getId());
-            save(entity);
-        } else {
-            Toaster.showToast(R.string.tip_login_failed);
-        }
+//        if (success) {
+//            CourseEntity entity = new CourseEntity();
+//            entity.setName(name);
+//            entity.setNumber(number);
+//            entity.setDescription(description);
+//            entity.setUserId(UserManager.getInstance().getUser().getId());
+//            save(entity);
+//        } else {
+//            Toaster.showToast(R.string.tip_login_failed);
+//        }
     }
 
     private boolean verify(String name, String number) {
@@ -209,5 +301,20 @@ public class CourseAddOrUpdateActivity extends ToolbarActivity implements Recycl
         String deleteString = String.format(mDeleteTipString, entity.getDayInWeek(), entity.getDescription());
         mDeleteDialog.setMessage(deleteString);
         mDeleteDialog.show();
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != RESULT_OK) {
+            return;
+        }
+
+        if (data == null) {
+            return;
+        }
+        CourseInfoEntity entity = data.getParcelableExtra(CourseInfoAddOrUpdateActivity.KEY_ENTITY);
+        mAdapter.append(entity);
     }
 }

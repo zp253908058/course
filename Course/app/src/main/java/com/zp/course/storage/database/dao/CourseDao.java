@@ -1,5 +1,6 @@
 package com.zp.course.storage.database.dao;
 
+import com.zp.course.model.CourseInfoContractEntity;
 import com.zp.course.storage.database.table.CourseEntity;
 import com.zp.course.storage.database.table.CourseInfoEntity;
 
@@ -33,4 +34,7 @@ public interface CourseDao {
 
     @Delete
     void deleteCourseInfo(CourseInfoEntity entity);
+
+    @Query("select * from course where id = :id")
+    CourseInfoContractEntity findById(long id);
 }

@@ -1,5 +1,6 @@
 package com.zp.course.ui.course;
 
+import com.zp.course.R;
 import com.zp.course.app.RecyclerAdapter;
 import com.zp.course.app.RecyclerViewHolder;
 import com.zp.course.storage.database.table.CourseInfoEntity;
@@ -29,7 +30,7 @@ public class CourseAdapter extends RecyclerAdapter<CourseInfoEntity> {
 
     @Override
     protected int getLayoutByViewType(int viewType) {
-        return 0;
+        return R.layout.item_course_info_layout;
     }
 
     @Override

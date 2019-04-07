@@ -38,7 +38,7 @@ import androidx.appcompat.app.AlertDialog;
 public class CourseInfoAddOrUpdateActivity extends ToolbarActivity {
 
     private static final String KEY_TIMETABLE_ID = "timetable_id";
-    private static final String KEY_ENTITY = "entity";
+    public static final String KEY_ENTITY = "entity";
 
     public static void goForResult(Activity context, long timetableId, int requestCode) {
         goForResult(context, timetableId, null, requestCode);

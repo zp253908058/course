@@ -38,6 +38,9 @@ public interface TimetableDao {
     @Query("select * from timetable where id = :id")
     TimetableClassEntity findById(long id);
 
+    @Query("select * from timetable where id = :id")
+    TimetableEntity getById(long id);
+
     @Query("select id from timetable where timetable_term = :term limit 1")
     long findByTerm(int term);
 

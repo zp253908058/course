@@ -99,6 +99,58 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/course_add_start_week_layout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/option_item_height"
+                android:onClick="onClick"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/TextViewStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="@string/hint_course_start_week" />
+
+                <TextView
+                    android:id="@+id/course_add_start_week"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:gravity="end|center_vertical"
+                    android:lines="1"
+                    android:maxEms="16" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/course_add_end_week_layout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/option_item_height"
+                android:onClick="onClick"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/TextViewStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="@string/hint_course_end_week" />
+
+                <TextView
+                    android:id="@+id/course_add_end_week"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:gravity="end|center_vertical"
+                    android:lines="1"
+                    android:maxEms="16" />
+
+            </LinearLayout>
+
         </LinearLayout>
 
         <EditText
@@ -115,7 +167,11 @@
             android:textSize="@dimen/normal_text_size"
             tools:text="按时间大幅拉升的就发是发生了的风景士大夫阿斯弗阿萨的浪费打扫房" />
 
-        <include layout="@layout/common_recycler_view" />
+        <include
+            layout="@layout/common_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16dp" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
